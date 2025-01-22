@@ -19,17 +19,11 @@ int main() {
     std::string text = "Tekst1|Tekst2|Tekst3";
     char delimiter = '|';
     
+    // Wywołanie funkcji splitString
     std::vector<std::string> splitResult = splitString(text, delimiter);
 
-    // Wyświetlanie wyniku
-    std::cout << "[";
-    for (size_t i = 0; i < splitResult.size(); ++i) {
-        std::cout << "\"" << splitResult[i] << "\"";
-        if (i < splitResult.size() - 1) {
-            std::cout << ", ";
-        }
-    }
-    std::cout << "]" << std::endl;
+    // Przykład dostępu do drugiego elementu
+    std::cout << "splitResult[1]: " << splitResult[1] << std::endl;
 
     return 0;
 }
