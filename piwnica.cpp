@@ -4,6 +4,9 @@
 #include <conio.h>
 #include <thread>
 #include <winuser.h>
+#include <vector>
+#include <array>
+#include <sstream>
 using namespace std;
 
 void spacer();
@@ -16,6 +19,7 @@ void openInventory();
 void initializeGameState();
 void changeGameState(string state);
 void intro();
+std::vector<std::string> splitString(const std::string& input, char delimiter);
 void playNote(int frequency, int duration);
 void playIntroMusic();
 void renderPlayer();
@@ -32,6 +36,15 @@ int inventory[5];
 
 int main()
 {
+    std::string text = "Tekst1|Tekst2|Tekst3";
+    char delimiter = '|';
+
+    // Wywołanie funkcji splitString
+    std::vector<std::string> splitResult = splitString(text, delimiter);
+
+    // Przykład dostępu do drugiego elementu
+    std::cout << "splitResult[1]: " << splitResult[1] << std::endl;
+
     SetConsoleTitle("A Legend of Norvastyr");
     SetConsoleOutputCP(CP_UTF8);
     cout << "Podaj nick:" << endl;
@@ -239,4 +252,16 @@ void playIntroMusic() {
     playNote(392, 400);  // G4
     playNote(349, 500);  // F4
     playNote(330, 700);  // E4
+}
+
+std::vector<std::string> splitString(const std::string& input, char delimiter) {
+    std::vector<std::string> result;
+    std::stringstream ss(input);
+    std::string token;
+
+    while (std::getline(ss, token, delimiter)) {
+        result.push_back(token);
+    }
+
+    return result;
 }
