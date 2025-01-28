@@ -1,0 +1,14 @@
+NAZWA|opis|DMG|cena|RAR
+0-podstawowy
+1-unikatowy
+2-rzadki
+3-epicki
+4-legendarny
+5-mityczny
+
+Patyk|Kawałek drewna|5|0|0
+Kamień|Lepsze to niż patyk :)|8|10|0
+Kawałek Szkła|Kiedyś była to część szklanego miecza...|12|50|0		==		Szklany Miecz|Sekretna Broń|999|0|5
+Młotek|Można nim przybijać gwoździe... głowy też.|25|150|0
+
+Nóż|Zwykły nóż kuchenny
