@@ -23,7 +23,7 @@ std::vector<std::string> splitString(const std::string& input, char delimiter);
 void playNote(int frequency, int duration);
 void playIntroMusic();
 void renderPlayer();
-void biome1();
+void biome1(); void Biome1();
 void biome1Battle();
 
 string nick;
@@ -187,16 +187,16 @@ void changeGameState(string state)
 
 void renderPlayer()
 {
-    cout << "     █████" << endl;
-    cout << "    █     █" << endl;
-    cout << "   █  ◉ ◉  █" << endl;
-    cout << "   █   ▄   █" << endl;
-    cout << "    ███████" << endl;
-    cout << "     █ █ █" << endl;
-    cout << "    ███████" << endl;
-    cout << "    █  █  █" << endl;
-    cout << "   █   █   █" << endl;
-    cout << "  ██       ██" << endl;
+    cout << "     █████     " << endl;
+    cout << "    █     █    " << endl;
+    cout << "   █  ◉ ◉ █   " << endl;
+    cout << "   █   ▄   █   " << endl;
+    cout << "    █     █    " << endl;
+    cout << "    ▄█████▄    " << endl;
+    cout << "   █  ███  █   " << endl;
+    cout << "     ▄███▄     " << endl;
+    cout << "    █     █    " << endl;
+    cout << "   ▄█     █▄   " << endl;
 }
 
 void biome1()
@@ -216,20 +216,68 @@ void biome1()
     spacer();
     renderPlayer();
     spacer();
-    cout << " [ ZNALEZIONO PRZECIWNIKA. KLIKNIJ "; setColor(4); cout << "[E]"; setColor(7); cout << ", ABY ROZPOCZĄĆ WALKĘ, ALBO "; setColor(4); cout << "[L]"; setColor(7); cout << ", ABY SPRÓBOWAĆ UCIEC. ]" << endl;
+    cout << " [ ZNALEZIONO PRZECIWNIKA. KLIKNIJ "; setColor(4); cout << "[E]"; setColor(7); cout << ", ABY ROZPOCZĄĆ WALKĘ ]" << endl;
     spacer();
 
     char inp = getch();
     switch (inp)
     {
         case 'e': changeGameState("Biome1Battle"); break;
-        case 'l': cout << "ucieczka"; break;
+        default: Biome1(); break;
+    }
+}
+
+void Biome1()
+{
+    system("cls");
+    renderStats();
+    spacer();
+    renderPlayer();
+    spacer();
+    cout << " [ ZNALEZIONO PRZECIWNIKA. KLIKNIJ "; setColor(4); cout << "[E]"; setColor(7); cout << ", ABY ROZPOCZĄĆ WALKĘ ]" << endl;
+    spacer();
+
+    char inp = getch();
+    switch (inp)
+    {
+        case 'e': changeGameState("Biome1Battle"); break;
+        default: Biome1(); break;
     }
 }
 
 void biome1Battle()
 {
-    cout << "walka";
+   // Animacja wczytywania
+    system("cls");
+    spacer();
+    cout << "       ██     ██  █████  ██      ██   ██  █████   █" << endl;
+    cout << "       ██     ██ ██   ██ ██      ██  ██  ██   ██  █" << endl;
+    cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl;
+    cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl;
+    cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(1500);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "       ██     ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    Sleep(300);
+    // Tu zaczyna się walka
+    renderStats();
+    spacer();
+    renderPlayer();
 }
 
 void playNote(int frequency, int duration) {
