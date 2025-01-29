@@ -7,6 +7,7 @@
 #include <vector>
 #include <array>
 #include <sstream>
+#include <ctime>
 using namespace std;
 
 void BOSS1_battle();
@@ -42,15 +43,7 @@ int inventory[5];
 
 int main()
 {
-    std::string text = "Tekst1|Tekst2|Tekst3";
-    char delimiter = '|';
-
-    // Wywołanie funkcji splitString
-    std::vector<std::string> splitResult = splitString(text, delimiter);
-
-    // Przykład dostępu do drugiego elementu
-    std::cout << "splitResult[1]: " << splitResult[1] << std::endl;
-
+    srand(time(NULL));
     SetConsoleTitle("A Legend of Norvastyr");
     SetConsoleOutputCP(CP_UTF8);
     cout << "Podaj nick:" << endl;
