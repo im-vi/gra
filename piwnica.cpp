@@ -34,7 +34,7 @@ void biome1(); void Biome1();
 void biome1Battle();
 
 string nick;
-int hp = 100;
+int HP = 100; int maxHP = 100; int DMG = 5;
 int gold = 0;
 // Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Store, Biome2Battle, Biome2Boss, Biome3, Biome3Store, Biome3Battle, Biome3Boss, Biome4, Biome4Store, Biome4Battle, Biome4Boss, Biome5, Biome5Store, Biome5Battle, Biome5Boss, EndSequence
 string gameState;
@@ -128,7 +128,7 @@ void renderMenu()
 
 void renderStats()
 {
-    setColor(5); cout << "[ " << nick << " ] "; setColor(2); cout << "HP: " << hp; setColor(6); cout << " ZŁOTO: " << gold << endl; setColor(7);
+    setColor(5); cout << "[ " << nick << " ] "; setColor(2); cout << "HP: " << HP << "/" << maxHP; setColor(6); cout << " ZŁOTO: " << gold; setColor(7);
 }
 
 void renderInput()
@@ -289,7 +289,7 @@ void biome1Battle()
     else if(randomMOB <= 100) // boss 1%
         BOSS1_battle();
 }
-void mushrom_battle()
+void mushroom_battle()
 {
     system("cls");
     renderStats();
