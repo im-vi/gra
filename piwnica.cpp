@@ -31,7 +31,7 @@ int hp = 100;
 int gold = 0;
 // Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Store, Biome2Battle, Biome2Boss, Biome3, Biome3Store, Biome3Battle, Biome3Boss, Biome4, Biome4Store, Biome4Battle, Biome4Boss, Biome5, Biome5Store, Biome5Battle, Biome5Boss, EndSequence
 string gameState;
-string items[2];
+string items[] = {"Patyk|5|0|0", "Kamień|8|10|0", "Kawałek Szkła|12|50|0", "Młotek|25|150|0"};
 int inventory[5];
 
 int main()
@@ -312,4 +312,17 @@ std::vector<std::string> splitString(const std::string& input, char delimiter) {
     }
 
     return result;
+}
+
+void openInventory()
+{
+    system("cls");
+    cout << "  [ EKWIPUNEK ]" << endl;
+    spacer();
+    char delimiter = '|';
+    for(int i = 0; i < sizeof(inventory)/sizeof(inventory[0]); i++)
+    {
+        std::vector<std::string> item = splitString(items[inventory[i]], delimiter);
+        cout << "  [ " << i+1 << ". " << item[0] << " ]" << endl;
+    }
 }
