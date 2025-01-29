@@ -251,6 +251,37 @@ void Biome1()
     }
 }
 
+void battleAnim()
+{
+    // Animacja wczytywania
+    system("cls");
+    spacer();
+    cout << "       ██     ██  █████  ██      ██   ██  █████   █" << endl;
+    cout << "       ██     ██ ██   ██ ██      ██  ██  ██   ██  █" << endl;
+    cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl;
+    cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl;
+    cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(1500);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "       ██     ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    spacer();
+cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
+    Sleep(300);
+    system("cls");
+    Sleep(300);
+}
+
 void biome1Battle()
 {
    int randomMOB = rand()% 101;
