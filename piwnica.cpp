@@ -9,6 +9,12 @@
 #include <sstream>
 using namespace std;
 
+void BOSS1_battle();
+void bandit_battle();
+void mirror_battle();
+void child_battle();
+void mushrom_battle();
+/////////////////////////////////////////////////////////////////
 void spacer();
 void setColor(int color);
 void exitMenu();
@@ -247,39 +253,113 @@ void Biome1()
 
 void biome1Battle()
 {
-   // Animacja wczytywania
+   int randomMOB = rand()% 101;
+   if(randomMOB <= 55) // 55%
+    mushrom_battle();
+    else if(randomMOB <= 80) // 25%
+    child_battle();
+    else if(randomMOB <= 95) // 15%
+    mirror_battle();
+    else if(randomMOB <= 99) // 4%
+    bandit_battle();
+    else if(randomMOB <= 100) // boss 1%
+        BOSS1_battle();
+}
+void mushrom_battle()
+{
     system("cls");
-    spacer();
-    cout << "       ██     ██  █████  ██      ██   ██  █████   █" << endl;
-    cout << "       ██     ██ ██   ██ ██      ██  ██  ██   ██  █" << endl;
-    cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl;
-    cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl;
-    cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
-    Sleep(1500);
-    system("cls");
-    spacer();
-cout << "                                                   " << endl; cout << "       ██     ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
-    Sleep(300);
-    system("cls");
-    spacer();
-cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "       ██  █  ██ ███████ ██      █████   ███████  █" << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
-    Sleep(300);
-    system("cls");
-    spacer();
-cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "       ██ ███ ██ ██   ██ ██      ██  ██  ██   ██  █" << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
-    Sleep(300);
-    system("cls");
-    spacer();
-cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "                                                   " << endl; cout << "        ███ ███  ██   ██ ███████ ██   ██ ██   ██  ▄" << endl;
-    Sleep(300);
-    system("cls");
-    Sleep(300);
-    // Tu zaczyna się walka
     renderStats();
     spacer();
-    renderPlayer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                           " << endl;
+    cout << "   █   ▄   █                                           " << endl;
+    cout << "    █     █                                  ▄▄▄▄▄▄    " << endl;
+    cout << "    ▄█████▄                               ▄██████████▄ " << endl;
+    cout << "   █  ███  █                              ██◉ ████◉ ██ " << endl;
+    cout << "     ▄███▄                                █████▄▄█████ " << endl;
+    cout << "    █     █                                   ████     " << endl;
+    cout << "   ▄█     █▄                                  ████     " << endl;
 }
-
+void child_battle()
+{
+    system("cls");
+    renderStats();
+    spacer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                           " << endl;
+    cout << "   █   ▄   █                                           " << endl;
+    cout << "    █     █                                  ▄▀▀▀▀▄    " << endl;
+    cout << "    ▄█████▄                                  █◉ ◉ █    " << endl;
+    cout << "   █  ███  █                                  ▀██▀   ▄ " << endl;
+    cout << "     ▄███▄                                ▄▄▀██████▀▀  " << endl;
+    cout << "    █     █                                  ██████    " << endl;
+    cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
+}
+void mirror_battle()
+{
+    system("cls");
+    renderStats();
+    spacer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                  ▄▀▀▀▀▀▀▄ " << endl;
+    cout << "   █   ▄   █                                  █░░░◉░◉█ " << endl;
+    cout << "    █     █                                   █░◉░░░░█ " << endl;
+    cout << "    ▄█████▄                                   █░░░░◉░█ " << endl;
+    cout << "   █  ███  █                                  █░◉░░░░█ " << endl;
+    cout << "     ▄███▄                                    █░░░◉░░█ " << endl;
+    cout << "    █     █                                   ▀▄▄▄▄▄▄▀ " << endl;
+    cout << "   ▄█     █▄                                  █      █ " << endl;
+}
+void bandit_battle()
+{
+    system("cls");
+    renderStats();
+    spacer();
+    cout << "     █████                                   ▄▄▄▄▄   " << endl;
+    cout << "    █     █                                 █     █  " << endl;
+    cout << "   █   ◉ ◉ █                               █ ◉ ◉   █ " << endl;
+    cout << "   █   ▄   █                               █▓▓▓▓▓▓▓█ " << endl;
+    cout << "    █     █                              ▐  █▓▓▓▓▓█  " << endl;
+    cout << "    ▄█████▄                              ▐  ▄▀███▀▄  " << endl;
+    cout << "   █  ███  █                             █▄▀  ███  █ " << endl;
+    cout << "     ▄███▄                               ▀   ▄███▄   " << endl;
+    cout << "    █     █                                 █     █  " << endl;
+    cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
+}
+void BOSS1_battle()
+{
+    system("cls");
+    spacer();
+    cout << "                                           " << endl;
+    cout << "    ██████   ▄█████▄  ▄████▄  ▄████▄   █   " << endl;
+    cout << "    ██    █  █▀   ▀█  █       █        █   " << endl;
+    cout << "    ██████   █  ■  █  ▀████▄  ▀████▄   █   " << endl;
+    cout << "    ██    █  █▄   ▄█       █       █   ▀   " << endl;
+    cout << "    ██████   ▀█████▀  ▀████▀  ▀████▀   ■   " << endl;
+    cout << "                                           " << endl;
+    Sleep(2500);
+    system("cls");
+    renderStats();
+    spacer();
+    cout << "                                                       " << endl;
+    cout << "                                                       " << endl;
+    cout << "                                                       " << endl;
+    cout << "                                                       " << endl;
+    cout << "                                                       " << endl;
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                           " << endl;
+    cout << "   █   ▄   █                                           " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "    ▄█████▄                                            " << endl;
+    cout << "   █  ███  █                                           " << endl;
+    cout << "     ▄███▄                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   ▄█     █▄                                           " << endl;
+}
 void playNote(int frequency, int duration) {
     Beep(frequency, duration);
     Sleep(100); // Pause
