@@ -35,6 +35,7 @@ void renderPlayer();
 void death();
 void biome1(); void Biome1();
 void biome1Battle();
+void openStore();
 
 string nick;
 int HP = 100; int maxHP = 100; int DMG = 5;
@@ -258,6 +259,7 @@ void biome1()
     setColor(4); cout << "  [E]"; setColor(7); cout << " Rozpocznij walkę" << endl;
     setColor(4); cout << "  [I]"; setColor(7); cout << " Otwórz ekwipunek" << endl;
     setColor(4); cout << "  [U]"; setColor(7); cout << " Ucieknij" << endl;
+    setColor(4); cout << "  [S]"; setColor(7); cout << " Odwiedź sklep" << endl;
     spacer();
 
     char inp = getch();
@@ -265,7 +267,7 @@ void biome1()
     {
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
-        case 'u': escapeEnemy();
+        case 'u': escapeEnemy(); break;
         default: Biome1(); break;
     }
 }
@@ -281,6 +283,7 @@ void Biome1()
     setColor(4); cout << "  [E]"; setColor(7); cout << " Rozpocznij walkę" << endl;
     setColor(4); cout << "  [I]"; setColor(7); cout << " Otwórz ekwipunek" << endl;
     setColor(4); cout << "  [U]"; setColor(7); cout << " Ucieknij" << endl;
+    setColor(4); cout << "  [S]"; setColor(7); cout << " Odwiedź sklep" << endl;
     spacer();
 
     char inp = getch();
@@ -289,6 +292,7 @@ void Biome1()
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
         case 'u': escapeEnemy(); break;
+        case 's': openStore(); break;
         default: Biome1(); break;
     }
 }
@@ -528,4 +532,23 @@ void openInventory()
     char inp = getch();
     if(inp == 'b') Biome1();
     else openInventory();
+}
+
+void openStore()
+{
+    int storeOffer[] = {5, 10, 3, 16, 9, 20};
+    system("cls");
+    cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << ", aby powrócić." << endl;
+    spacer();
+    cout << "  [ SKLEP ]" << endl;
+    spacer();
+    char delimiter = '|';
+    for(int i = 0; i < sizeof(inventory)/sizeof(inventory[0]); i++)
+    {
+        std::vector<std::string> item = splitString(items[storeOffer[i]], delimiter);
+        setColor(rarityToColor(stoi(item[3]))); cout << "  [ " << i+1 << ". " << item[0] << " | "; setColor(6); cout << "CENA: " << item[1]; setColor(rarityToColor(stoi(item[3]))); cout << " ]" << endl; setColor(7);
+    }
+    char inp = getch();
+    if(inp == 'b') Biome1();
+    else openStore();
 }
