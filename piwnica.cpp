@@ -228,8 +228,7 @@ void escapeEnemy()
     cout << "     [ Uciekłeś od przeciwnika. Wstyd... ]" << endl;
     spacer();
     Sleep(1000);
-    if(gameState == "Biome1")
-        changeGameState("Menu");
+    changeGameState("Biome1");
 
 }
 
@@ -271,7 +270,6 @@ void biome1()
     cout << " [ ZNALEZIONO PRZECIWNIKA. ] " << endl << endl;
     setColor(4); cout << "  [E]"; setColor(7); cout << " Rozpocznij walkę" << endl;
     setColor(4); cout << "  [I]"; setColor(7); cout << " Otwórz ekwipunek" << endl;
-    setColor(4); cout << "  [U]"; setColor(7); cout << " Ucieknij" << endl;
     setColor(4); cout << "  [S]"; setColor(7); cout << " Odwiedź sklep" << endl;
     spacer();
 
@@ -280,7 +278,6 @@ void biome1()
     {
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
-        case 'u': escapeEnemy(); break;
         default: Biome1(); break;
     }
 }
@@ -295,7 +292,6 @@ void Biome1()
     cout << " [ ZNALEZIONO PRZECIWNIKA. ] " << endl << endl;
     setColor(4); cout << "  [E]"; setColor(7); cout << " Rozpocznij walkę" << endl;
     setColor(4); cout << "  [I]"; setColor(7); cout << " Otwórz ekwipunek" << endl;
-    setColor(4); cout << "  [U]"; setColor(7); cout << " Ucieknij" << endl;
     setColor(4); cout << "  [S]"; setColor(7); cout << " Odwiedź sklep" << endl;
     spacer();
 
@@ -327,6 +323,7 @@ void biome1Battle()
 
 void mushroom_battle()
 {
+    int run_mushroom = rand()%5+1;
     int HP_mushroom = 25;
     int reward_mushroom = rand()%5 + 1;
     int xp_mushroom = rand()%5 + 1;
@@ -346,9 +343,10 @@ void mushroom_battle()
     cout << "   ▄█     █▄                                  ████     " << endl;
     Sleep(500);
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-    Sleep(1500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
     do{
-        Sleep(500);
+        Sleep(1000);
     system("cls");
     renderStats();
     cout << "       |       [ GRZYB ] "; setColor(4); cout << "HP: " << HP_mushroom << "/25"; setColor(7);
@@ -366,13 +364,27 @@ void mushroom_battle()
     char atk;
     do
     atk = getch();
-    while(atk!='a');
+    while(atk!='a' && atk!='u');
     switch (atk)
     {
         case 'a':  HP_mushroom = HP_mushroom - DMG; break;
+        case 'u':
+            if(run_mushroom >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_mushroom = rand()%5+1; break;
     }
     cout << endl << "[ PRZECIWNIK MA " << HP_mushroom << "/" << "25 HP ]" << endl;
-    Sleep(200);
+    Sleep(100);
     if(HP_mushroom <= 0){
         cout << "[ POKONAŁEŚ GRZYBA!]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_mushroom << " ZŁOTA ORAZ " << xp_mushroom << "XP";
@@ -384,7 +396,7 @@ void mushroom_battle()
             else{
         HP = HP - 3;
         cout << "[ STRACIŁEŚ 3 HP]" << endl;
-        Sleep(200);
+        Sleep(100);
             }
     if(HP <= 0){
         cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
@@ -397,6 +409,7 @@ void mushroom_battle()
 }
 void child_battle()
 {
+    int run_child = rand()%5+1;
     int HP_child = 50;
     int reward_child = rand()%11 + 5;
     int xp_child = rand()%11 + 5;
@@ -415,7 +428,8 @@ void child_battle()
     cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
     Sleep(500);
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-    Sleep(1500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
     do{
         Sleep(1250);
     system("cls");
@@ -435,13 +449,27 @@ void child_battle()
     char atk;
     do
     atk = getch();
-    while(atk!='a');
+    while(atk!='a' && atk!='u');
     switch (atk)
     {
         case 'a':  HP_child = HP_child - DMG; break;
+        case 'u':
+            if(run_child >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_child = rand()%5+1; break;
     }
     cout << endl << "[ PRZECIWNIK MA " << HP_child << "/" << "50 HP ]" << endl;
-    Sleep(500);
+    Sleep(100);
     if(HP_child <= 0){
         cout << "[ POKONAŁEŚ ZŁE DZIECKO!]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_child << " ZŁOTA ORAZ " << xp_child << "XP";
@@ -453,7 +481,7 @@ void child_battle()
             else{
         HP = HP - 8;
         cout << "[ STRACIŁEŚ 8 HP]" << endl;
-        Sleep(500);
+        Sleep(100);
             }
     if(HP <= 0){
         cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
@@ -466,6 +494,7 @@ void child_battle()
 }
 void mirror_battle()
 {
+    int run_mirror = rand()%5+1;
     int HP_mirror = 125;
     int reward_mirror = rand()%11 + 15;
     int xp_mirror = rand()%11 + 15;
@@ -484,7 +513,8 @@ void mirror_battle()
     cout << "   ▄█     █▄                                  █      █ " << endl;
     Sleep(500);
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-    Sleep(1500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
     do{
         Sleep(1250);
     system("cls");
@@ -504,13 +534,27 @@ void mirror_battle()
     char atk;
     do
     atk = getch();
-    while(atk!='a');
+    while(atk!='a' && atk!='u');
     switch (atk)
     {
         case 'a':  HP_mirror = HP_mirror - DMG; break;
+        case 'u':
+            if(run_mirror >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_mirror = rand()%5+1; break;
     }
     cout << endl << "[ PRZECIWNIK MA " << HP_mirror << "/" << "125 HP ]" << endl;
-    Sleep(500);
+    Sleep(100);
     if(HP_mirror <= 0){
         cout << "[ POKONAŁEŚ SWOJE ODBICIE!]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_mirror << " ZŁOTA ORAZ " << xp_mirror << "XP";
@@ -522,7 +566,7 @@ void mirror_battle()
             else{
         HP = HP - DMG;
         cout << "[ STRACIŁEŚ " << DMG << " HP ]" << endl;
-        Sleep(500);
+        Sleep(100);
             }
     if(HP <= 0){
         cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
@@ -535,6 +579,7 @@ void mirror_battle()
 }
 void bandit_battle()
 {
+    int run_bandit = rand()%5+1;
     int HP_bandit = 150;
     int reward_bandit = rand()%26 + 25;
     int xp_bandit = rand()%26 + 25;
@@ -553,7 +598,8 @@ void bandit_battle()
     cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
     Sleep(500);
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-    Sleep(1500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
     do{
         Sleep(1250);
     system("cls");
@@ -573,13 +619,27 @@ void bandit_battle()
     char atk;
     do
     atk = getch();
-    while(atk!='a');
+    while(atk!='a' && atk!='u');
     switch (atk)
     {
         case 'a':  HP_bandit = HP_bandit - DMG; break;
+        case 'u':
+            if(run_bandit >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_bandit = rand()%5+1; break;
     }
     cout << endl << "[ PRZECIWNIK MA " << HP_bandit << "/" << "150 HP ]" << endl;
-    Sleep(500);
+    Sleep(100);
     if(HP_bandit <= 0){
         cout << "[ POKONAŁEŚ BANDYTĘ!]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_bandit << " ZŁOTA ORAZ " << xp_bandit << "XP";
@@ -591,7 +651,7 @@ void bandit_battle()
             else{
         HP = HP - 15;
         cout << "[ STRACIŁEŚ 15 HP]" << endl;
-        Sleep(500);
+        Sleep(100);
             }
     if(HP <= 0){
         cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
@@ -641,7 +701,8 @@ void BOSS1_battle()
     cout << "   ▄█     █▄                     ▄████▄    ▄████▄              " << endl;
     Sleep(500);
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-    Sleep(1500);
+    cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
+    Sleep(1750);
     do{
         Sleep(1250);
     system("cls");
@@ -689,7 +750,7 @@ void BOSS1_battle()
         default: cout << "[ STRACIŁEŚ OKAZJĘ NA ATAK... A PRZECIWNIK JĄ WYKORZYSTAŁ ]" << endl; Sleep(1500); break;
     }
     cout << endl << "[ PRZECIWNIK MA " << HP_GOLEM << "/" << "300 HP ]" << endl;
-    Sleep(500);
+    Sleep(100);
     if(HP_GOLEM <= 0){
         cout << "[ POKONAŁEŚ PIERWSZEGO BOSSA GOLEM'a!]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP";
@@ -701,7 +762,7 @@ void BOSS1_battle()
             else{
         HP = HP - 10;
         cout << "[ STRACIŁEŚ 10 HP]" << endl;
-        Sleep(500);
+        Sleep(100);
             }
     if(HP <= 0){
         cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
