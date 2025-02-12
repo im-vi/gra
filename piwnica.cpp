@@ -49,7 +49,7 @@ int gold = 590015209; int lvl = 0; int XP = 99; int maxXP = 100;
 int heldItem = 0;
 // Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Battle, Biome2Boss, Biome3, Biome3Battle, Biome3Boss, Biome4, Biome4Battle, Biome4Boss, Biome5, Biome5Battle, Biome5Boss, EndSequence
 string gameState;
-string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|10|0", "Kawałek Szkła|12|50|0", "Młotek|25|150|0", "Zardzewiały Ostrz|5|10|0", "Żelazny Kieł|12|50|1", "Cienistożerca|20|150|2, Żarowy Rzeźnik|30|300|3", "Runiczne Ostrze Norvastyru|50|700|4", "Zwiastun Zagłady|80|1500|5", "Rozłupana Siekiera|6|15|0", "Bojowy Topór|14|70|1", "Mroźny Rzeźnik|22|180|2", "Płomienny Topór Wojenny|35|350|3", "Gromowładca|55|800|4", "Gniew Tytana|85|1600|5", "Pęknięta Różdżka|4|8|0", "Zaklęty Dębowy Kostur|10|40|1", "Więziacz Otchłani|18|130|2", "Niebiańskie Berło|28|270|3", "Dominacja Arcymaga|48|650|4", "Kataklizm Arkanisty|75|1400|5"};
+string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Żarowy Rzeźnik|30|300|2", "Runiczne Ostrze Norvastyru|50|700|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
 int inventory[5];
 
 int main()
