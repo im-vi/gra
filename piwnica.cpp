@@ -64,7 +64,7 @@ int main()
     inventory[4] = 0;
     cout << "Podaj nick:" << endl;
     cout << "> "; setColor(5); cin >> nick; setColor(7);
-    changeGameState("Biome1");
+    changeGameState("Menu");
 }
 
 void initializeGameState()
@@ -389,7 +389,7 @@ void mushroom_battle()
     Sleep(100);
     if(HP_mushroom <= 0){
         cout << "[ POKONAŁEŚ GRZYBA!]" << endl << endl;
-        cout << "[ OTRZYMAŁEŚ: " << reward_mushroom << " ZŁOTA ORAZ " << xp_mushroom << "XP";
+        cout << "[ OTRZYMAŁEŚ: " << reward_mushroom << " ZŁOTA ORAZ " << xp_mushroom << "XP" << " ]";
         gold = gold + reward_mushroom;
         XP = XP + xp_mushroom;
         Sleep(2000);
@@ -474,7 +474,7 @@ void child_battle()
     Sleep(100);
     if(HP_child <= 0){
         cout << "[ POKONAŁEŚ ZŁE DZIECKO!]" << endl << endl;
-        cout << "[ OTRZYMAŁEŚ: " << reward_child << " ZŁOTA ORAZ " << xp_child << "XP";
+        cout << "[ OTRZYMAŁEŚ: " << reward_child << " ZŁOTA ORAZ " << xp_child << "XP" << " ]";
         gold = gold + reward_child;
         XP = XP + xp_child;
         Sleep(2000);
@@ -559,7 +559,7 @@ void mirror_battle()
     Sleep(100);
     if(HP_mirror <= 0){
         cout << "[ POKONAŁEŚ SWOJE ODBICIE!]" << endl << endl;
-        cout << "[ OTRZYMAŁEŚ: " << reward_mirror << " ZŁOTA ORAZ " << xp_mirror << "XP";
+        cout << "[ OTRZYMAŁEŚ: " << reward_mirror << " ZŁOTA ORAZ " << xp_mirror << "XP" << " ]";
         gold = gold + reward_mirror;
         XP = XP + xp_mirror;
         Sleep(2000);
@@ -644,7 +644,7 @@ void bandit_battle()
     Sleep(100);
     if(HP_bandit <= 0){
         cout << "[ POKONAŁEŚ BANDYTĘ!]" << endl << endl;
-        cout << "[ OTRZYMAŁEŚ: " << reward_bandit << " ZŁOTA ORAZ " << xp_bandit << "XP";
+        cout << "[ OTRZYMAŁEŚ: " << reward_bandit << " ZŁOTA ORAZ " << xp_bandit << "XP" << " ]";
         gold = gold + reward_bandit;
         XP = XP + xp_bandit;
         Sleep(2000);
@@ -755,7 +755,7 @@ void BOSS1_battle()
     Sleep(100);
     if(HP_GOLEM <= 0){
         cout << "[ POKONAŁEŚ PIERWSZEGO BOSSA GOLEM'a!]" << endl << endl;
-        cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP";
+        cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP" << " ]";
         gold = gold + reward_GOLEM;
         XP = XP + xp_GOLEM;
         Sleep(2000);
@@ -820,6 +820,7 @@ int rarityToColor(int rar)
         case 3: return 5; break;
         case 4: return 6; break;
         case 5: return 14; break;
+        case 6: return 15; break;
     }
 }
 
@@ -861,7 +862,7 @@ void openInventory()
 
 void openStore()
 {
-    int storeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11, 12};
+    int storeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 22};
     system("cls");
     cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << ", aby powrócić." << endl << endl;
     setColor(6); cout << "  [ ZŁOTO NA KONCIE: " << gold << " ]" << endl << endl << endl; setColor(7);
