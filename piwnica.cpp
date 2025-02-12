@@ -49,7 +49,7 @@ int gold = 590015209; int lvl = 0; int XP = 99; int maxXP = 100;
 int heldItem = 0;
 // Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Battle, Biome2Boss, Biome3, Biome3Battle, Biome3Boss, Biome4, Biome4Battle, Biome4Boss, Biome5, Biome5Battle, Biome5Boss, EndSequence
 string gameState;
-string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Żarowy Rzeźnik|30|300|2", "Runiczne Ostrze Norvastyru|50|700|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
+string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Żarowy Rzeźnik|30|0|2", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Runiczne Ostrze Norvastyru|70|900|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
 int inventory[5];
 
 int main()
@@ -861,14 +861,14 @@ void openInventory()
 
 void openStore()
 {
-    int storeOffer[] = {5, 10, 3, 16, 9};
+    int storeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11, 12};
     system("cls");
     cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << ", aby powrócić." << endl << endl;
     setColor(6); cout << "  [ ZŁOTO NA KONCIE: " << gold << " ]" << endl << endl << endl; setColor(7);
     cout << "  [ SKLEP ]" << endl;
     spacer();
     char delimiter = '|';
-    for(int i = 0; i < 5; i++)
+    for(int i = 0; i < 9; i++)
     {
         std::vector<std::string> item = splitString(items[storeOffer[i]], delimiter);
         setColor(rarityToColor(stoi(item[3]))); cout << "  [ " << i+1 << ". " << item[0] << " | "; setColor(1); cout << "OBRAŻENIA: " << item[1]; setColor(rarityToColor(stoi(item[3]))); cout << " | "; setColor(6); cout << "CENA: " << item[2]; setColor(rarityToColor(stoi(item[3]))); cout << " ]" << endl; setColor(7);
@@ -922,7 +922,7 @@ void buyItem(int* offer)
     cout << "  --------------------------------------------" << endl;
     setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
     setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Tej akcji nie można cofnąć." << endl << endl;
-    cout << "  Kliknij przycisk od 1 do 5, aby kupić przedmiot." << endl;
+    cout << "  Kliknij przycisk od 1 do 9, aby kupić przedmiot." << endl;
     char inp = getch();
     switch (inp)
     {
@@ -931,6 +931,10 @@ void buyItem(int* offer)
         case '3': buyItemConfirmation(offer[2]); break;
         case '4': buyItemConfirmation(offer[3]); break;
         case '5': buyItemConfirmation(offer[4]); break;
+        case '6': buyItemConfirmation(offer[5]); break;
+        case '7': buyItemConfirmation(offer[6]); break;
+        case '8': buyItemConfirmation(offer[7]); break;
+        case '9': buyItemConfirmation(offer[8]); break;
         case 'x': openStore(); break;
         default: buyItem(offer); break;
     }
