@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bronie</title>
+</head>
+<body>
+    <script>
+        let arr = ["-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Żarowy Rzeźnik|30|300|2", "Runiczne Ostrze Norvastyru|50|700|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"];
+
+        let rarTxt = ["Podstawowy", "Unikatowy", "Rzadki", "Epicki", "Legendarny", "Mityczny", "SEKRET"];
+
+        let table = document.createElement("table");
+        table.border = "1"; // Dodaje obramowanie dla lepszej czytelności
+
+        let tr = document.createElement("tr");
+
+        let headers = ["ID", "Nazwa", "Obrażenia", "Cena", "Klasa rzadkości"];
+        headers.forEach(headerText => {
+            let th = document.createElement("th");
+            th.textContent = headerText;
+            tr.appendChild(th);
+        });
+
+        table.appendChild(tr);
+
+        for (let i = 0; i < arr.length; i++) {
+            let split = arr[i].split("|");
+            let tr2 = document.createElement("tr");
+
+            let tdID = document.createElement("td");
+            let td21 = document.createElement("td");
+            let td22 = document.createElement("td");
+            let td23 = document.createElement("td");
+            let td24 = document.createElement("td");
+
+            tdID.textContent = i;
+            td21.textContent = split[0];
+            td22.textContent = split[1];
+            td23.textContent = split[2];
+            td24.textContent = rarTxt[parseInt(split[3])];
+
+            tr2.appendChild(tdID);
+            tr2.appendChild(td21);
+            tr2.appendChild(td22);
+            tr2.appendChild(td23);
+            tr2.appendChild(td24);
+            table.appendChild(tr2);
+        }
+
+        document.body.appendChild(table);
+    </script>
+</body>
+</html>
