@@ -41,11 +41,12 @@ void assignToInventory(int item);
 void buyItem(int* offer);
 void buyItemConfirmation(int item);
 void equipItem();
+void equipItemConfirmation(int position);
 
 string nick;
 int HP = 100; int maxHP = 100; int DMG = 5;
-int gold = 100; int lvl = 0; int XP = 99; int maxXP = 100;
-int heldItem;
+int gold = 590015209; int lvl = 0; int XP = 99; int maxXP = 100;
+int heldItem = 0;
 // Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Battle, Biome2Boss, Biome3, Biome3Battle, Biome3Boss, Biome4, Biome4Battle, Biome4Boss, Biome5, Biome5Battle, Biome5Boss, EndSequence
 string gameState;
 string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|10|0", "Kawałek Szkła|12|50|0", "Młotek|25|150|0", "Zardzewiały Ostrz|5|10|0", "Żelazny Kieł|12|50|1", "Cienistożerca|20|150|2, Żarowy Rzeźnik|30|300|3", "Runiczne Ostrze Norvastyru|50|700|4", "Zwiastun Zagłady|80|1500|5", "Rozłupana Siekiera|6|15|0", "Bojowy Topór|14|70|1", "Mroźny Rzeźnik|22|180|2", "Płomienny Topór Wojenny|35|350|3", "Gromowładca|55|800|4", "Gniew Tytana|85|1600|5", "Pęknięta Różdżka|4|8|0", "Zaklęty Dębowy Kostur|10|40|1", "Więziacz Otchłani|18|130|2", "Niebiańskie Berło|28|270|3", "Dominacja Arcymaga|48|650|4", "Kataklizm Arkanisty|75|1400|5"};
@@ -58,7 +59,7 @@ int main()
     SetConsoleOutputCP(CP_UTF8);
     inventory[0] = 1;
     inventory[1] = 0;
-    inventory[2] = 2;
+    inventory[2] = 0;
     inventory[3] = 0;
     inventory[4] = 0;
     cout << "Podaj nick:" << endl;
@@ -143,7 +144,7 @@ void renderMenu()
 
 void renderStats()
 {
-    setColor(5); cout << "[ " << nick << " ] "; setColor(9); cout << lvl << " lvl"; setColor(7); cout << "|"; setColor(9);cout << " XP: " << XP << "/" << maxXP; setColor(2); cout << " HP: " << HP << "/" << maxHP; setColor(6); cout << " ZŁOTO: " << gold; setColor(7);
+    setColor(5); cout << "[ " << nick << " ] "; setColor(9); cout << "LVL: " << lvl; setColor(9);cout << " XP: " << XP << "/" << maxXP; setColor(2); cout << " HP: " << HP << "/" << maxHP; setColor(4); cout << " OBRAŻENIA: " << DMG; setColor(6); cout << " ZŁOTO: " << gold; setColor(7);
     if(XP >= maxXP){
         lvl++;
         XP = 0;
@@ -228,7 +229,8 @@ void escapeEnemy()
     cout << "     [ Uciekłeś od przeciwnika. Wstyd... ]" << endl;
     spacer();
     Sleep(1000);
-    changeGameState("Biome1");
+    if(gameState == "Biome1")
+        changeGameState("Menu");
 
 }
 
@@ -278,6 +280,7 @@ void biome1()
     {
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
+        case 's': openStore(); break;
         default: Biome1(); break;
     }
 }
@@ -300,7 +303,6 @@ void Biome1()
     {
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
-        case 'u': escapeEnemy(); break;
         case 's': openStore(); break;
         default: Biome1(); break;
     }
@@ -773,6 +775,7 @@ void BOSS1_battle()
     }
     }while(HP_GOLEM >= 0);
 }
+
 void playNote(int frequency, int duration) {
     Beep(frequency, duration);
     Sleep(100); // Pause
@@ -833,7 +836,12 @@ void openInventory()
         std::vector<std::string> item = splitString(items[inventory[i]], delimiter);
         if(stoi(item[1]) != 0)
         {
-            setColor(rarityToColor(stoi(item[3]))); cout << "  [ " << i+1 << ". " << item[0] << " | "; setColor(1); cout << "OBRAŻENIA: " << item[1]; setColor(7); cout << " ]" << endl; setColor(7);
+            setColor(rarityToColor(stoi(item[3]))); cout << "  [ " << i+1 << ". " << item[0] << " | "; setColor(1); cout << "OBRAŻENIA: " << item[1]; setColor(rarityToColor(stoi(item[3]))); cout << " ]"; setColor(7);
+            if(i == heldItem)
+            {
+                setColor(2); cout << " [ WYPOSAŻONY ]"; setColor(7);
+            }
+            cout << endl;
         }
         else
         {
@@ -842,10 +850,12 @@ void openInventory()
     }
     spacer();
     setColor(4); cout << "  [W]"; setColor(7); cout << " Wyrzuć przedmiot" << endl;
+    setColor(4); cout << "  [E]"; setColor(7); cout << " Wyposaż przedmiot" << endl;
 
     char inp = tolower(getch());
     if(inp == 'b') Biome1();
     else if(inp == 'w') dropItem();
+    else if(inp == 'e') equipItem();
     else openInventory();
 }
 
@@ -956,5 +966,39 @@ void buyItemConfirmation(int item)
 
 void equipItem()
 {
+    cout << "  --------------------------------------------" << endl;
+    setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
+    cout << "  Kliknij przycisk od 1 do 5, aby wyposażyć przedmiot." << endl;
+    char inp = getch();
+    switch (inp)
+    {
+        case '1': equipItemConfirmation(0); break;
+        case '2': equipItemConfirmation(1); break;
+        case '3': equipItemConfirmation(2); break;
+        case '4': equipItemConfirmation(3); break;
+        case '5': equipItemConfirmation(4); break;
+        case 'x': openInventory(); break;
+        default: equipItem(); break;
+    }
+}
 
+void equipItemConfirmation(int position)
+{
+    char delimiter = '|';
+    std::vector<std::string> itemToEquip = splitString(items[inventory[position]], delimiter);
+    cout << "  --------------------------------------------" << endl;
+    if(inventory[position] == 0)
+    {
+        cout << "  Na tej pozycji nie ma żadnego przedmiotu." << endl;
+        Sleep(1000);
+        openInventory();
+    }
+    else
+    {
+        cout << "  Wyposażono: "; setColor(rarityToColor(stoi(itemToEquip[3]))); cout << itemToEquip[0] << endl; setColor(7);
+        heldItem = position;
+        DMG = stoi(itemToEquip[1]);
+        Sleep(1000);
+        openInventory();
+    }
 }
