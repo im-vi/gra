@@ -51,6 +51,7 @@ int heldItem = 0;
 string gameState;
 string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Żarowy Rzeźnik|30|0|2", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Runiczne Ostrze Norvastyru|70|900|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
 int inventory[5];
+int defeatedEnemies = 0;
 
 int main()
 {
@@ -229,8 +230,8 @@ void escapeEnemy()
     cout << "     [ Uciekłeś od przeciwnika. Wstyd... ]" << endl;
     spacer();
     Sleep(1000);
-    if(gameState == "Biome1")
-        changeGameState("Menu");
+    if(gameState == "Biome1Battle")
+        changeGameState("Biome1");
 
 }
 
@@ -392,12 +393,13 @@ void mushroom_battle()
     cout << endl << "[ PRZECIWNIK MA " << HP_mushroom << "/" << "25 HP ]" << endl;
     Sleep(100);
     if(HP_mushroom <= 0){
-        cout << "[ POKONAŁEŚ GRZYBA!]" << endl << endl;
+        cout << "[ POKONAŁEŚ GRZYBA! ]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_mushroom << " ZŁOTA ORAZ " << xp_mushroom << "XP" << " ]";
         gold = gold + reward_mushroom;
         XP = XP + xp_mushroom;
         Sleep(2000);
-        Biome1();
+        defeatedEnemies++;
+        changeGameState("Biome1");
     }
             else{
         HP = HP - 3;
@@ -409,7 +411,8 @@ void mushroom_battle()
         gold = gold - (gold/20);
         HP = maxHP*0.5;
         Sleep(2000);
-        Biome1();
+        defeatedEnemies++;
+        changeGameState("Biome1");
     }
     }while(HP_mushroom >= 0);
 }
@@ -486,7 +489,8 @@ void child_battle()
         gold = gold + reward_child;
         XP = XP + xp_child;
         Sleep(2000);
-        Biome1();
+        defeatedEnemies++;
+        changeGameState("Biome1");
     }
             else{
         HP = HP - 8;
@@ -575,7 +579,8 @@ void mirror_battle()
         gold = gold + reward_mirror;
         XP = XP + xp_mirror;
         Sleep(2000);
-        Biome1();
+        defeatedEnemies++;
+        changeGameState("Biome1");
     }
             else{
         HP = HP - DMG;
@@ -664,7 +669,8 @@ void bandit_battle()
         gold = gold + reward_bandit;
         XP = XP + xp_bandit;
         Sleep(2000);
-        Biome1();
+        defeatedEnemies++;
+        changeGameState("Biome1");
     }
             else{
         HP = HP - 15;
@@ -775,7 +781,8 @@ void BOSS1_battle()
         gold = gold + reward_GOLEM;
         XP = XP + xp_GOLEM;
         Sleep(2000);
-        Biome1();
+        defeatedEnemies = 0;
+        changeGameState("Biome1");
     }
             else{
         HP = HP - 10;
