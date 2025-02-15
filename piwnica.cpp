@@ -343,10 +343,10 @@ void mushroom_battle()
     cout << "     ▄███▄                                █████▄▄█████ " << endl;
     cout << "    █     █                                   ████     " << endl;
     cout << "   ▄█     █▄                                  ████     " << endl;
-    Sleep(500);
+    spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    Sleep(1750);
+    spacer();
     do{
         Sleep(1000);
     system("cls");
@@ -363,6 +363,10 @@ void mushroom_battle()
     cout << "     ▄███▄                                █████▄▄█████ " << endl;
     cout << "    █     █                                   ████     " << endl;
     cout << "   ▄█     █▄                                  ████     " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
     char atk;
     do
     atk = getch();
@@ -397,7 +401,7 @@ void mushroom_battle()
     }
             else{
         HP = HP - 3;
-        cout << "[ STRACIŁEŚ 3 HP]" << endl;
+        cout << "[ STRACIŁEŚ 3 HP ]" << endl;
         Sleep(100);
             }
     if(HP <= 0){
@@ -428,10 +432,10 @@ void child_battle()
     cout << "     ▄███▄                                ▄▄▀██████▀▀  " << endl;
     cout << "    █     █                                  ██████    " << endl;
     cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
-    Sleep(500);
+    spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    Sleep(1750);
+    spacer();
     do{
         Sleep(1250);
     system("cls");
@@ -448,6 +452,10 @@ void child_battle()
     cout << "     ▄███▄                                ▄▄▀██████▀▀  " << endl;
     cout << "    █     █                                  ██████    " << endl;
     cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
     char atk;
     do
     atk = getch();
@@ -482,7 +490,7 @@ void child_battle()
     }
             else{
         HP = HP - 8;
-        cout << "[ STRACIŁEŚ 8 HP]" << endl;
+        cout << "[ STRACIŁEŚ 8 HP ]" << endl;
         Sleep(100);
             }
     if(HP <= 0){
@@ -513,10 +521,10 @@ void mirror_battle()
     cout << "     ▄███▄                                    █░░░◉░░█ " << endl;
     cout << "    █     █                                   ▀▄▄▄▄▄▄▀ " << endl;
     cout << "   ▄█     █▄                                  █      █ " << endl;
-    Sleep(500);
+    spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    Sleep(1750);
+    spacer();
     do{
         Sleep(1250);
     system("cls");
@@ -533,6 +541,10 @@ void mirror_battle()
     cout << "     ▄███▄                                    █░░░◉░░█ " << endl;
     cout << "    █     █                                   ▀▄▄▄▄▄▄▀ " << endl;
     cout << "   ▄█     █▄                                  █      █ " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
     char atk;
     do
     atk = getch();
@@ -558,7 +570,7 @@ void mirror_battle()
     cout << endl << "[ PRZECIWNIK MA " << HP_mirror << "/" << "125 HP ]" << endl;
     Sleep(100);
     if(HP_mirror <= 0){
-        cout << "[ POKONAŁEŚ SWOJE ODBICIE!]" << endl << endl;
+        cout << "[ POKONAŁEŚ SWOJE ODBICIE! ]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_mirror << " ZŁOTA ORAZ " << xp_mirror << "XP" << " ]";
         gold = gold + reward_mirror;
         XP = XP + xp_mirror;
@@ -598,10 +610,10 @@ void bandit_battle()
     cout << "     ▄███▄                               ▀   ▄███▄   " << endl;
     cout << "    █     █                                 █     █  " << endl;
     cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
-    Sleep(500);
+    spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    Sleep(1750);
+    spacer();
     do{
         Sleep(1250);
     system("cls");
@@ -618,6 +630,10 @@ void bandit_battle()
     cout << "     ▄███▄                               ▀   ▄███▄   " << endl;
     cout << "    █     █                                 █     █  " << endl;
     cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
     char atk;
     do
     atk = getch();
@@ -643,7 +659,7 @@ void bandit_battle()
     cout << endl << "[ PRZECIWNIK MA " << HP_bandit << "/" << "150 HP ]" << endl;
     Sleep(100);
     if(HP_bandit <= 0){
-        cout << "[ POKONAŁEŚ BANDYTĘ!]" << endl << endl;
+        cout << "[ POKONAŁEŚ BANDYTĘ! ]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_bandit << " ZŁOTA ORAZ " << xp_bandit << "XP" << " ]";
         gold = gold + reward_bandit;
         XP = XP + xp_bandit;
@@ -652,7 +668,7 @@ void bandit_battle()
     }
             else{
         HP = HP - 15;
-        cout << "[ STRACIŁEŚ 15 HP]" << endl;
+        cout << "[ STRACIŁEŚ 15 HP ]" << endl;
         Sleep(100);
             }
     if(HP <= 0){
@@ -701,10 +717,10 @@ void BOSS1_battle()
     cout << "     ▄███▄                ▀▀        ███    ███         ▀▀      " << endl;
     cout << "    █     █                        ███▀    ▀███                " << endl;
     cout << "   ▄█     █▄                     ▄████▄    ▄████▄              " << endl;
-    Sleep(500);
+    spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
-    Sleep(1750);
+    spacer();
     do{
         Sleep(1250);
     system("cls");
@@ -754,7 +770,7 @@ void BOSS1_battle()
     cout << endl << "[ PRZECIWNIK MA " << HP_GOLEM << "/" << "300 HP ]" << endl;
     Sleep(100);
     if(HP_GOLEM <= 0){
-        cout << "[ POKONAŁEŚ PIERWSZEGO BOSSA GOLEM'a!]" << endl << endl;
+        cout << "[ POKONAŁEŚ PIERWSZEGO BOSSA GOLEM'a! ]" << endl << endl;
         cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP" << " ]";
         gold = gold + reward_GOLEM;
         XP = XP + xp_GOLEM;
