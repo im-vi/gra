@@ -11,10 +11,10 @@
 using namespace std;
 
 void BOSS1_battle();
-void bandit_battle(int emaxHP, int edmg, string callback);
-void mirror_battle(int emaxHP, string callback);
-void child_battle(int emaxHP, int edmg, string callback);
-void mushroom_battle(int emaxHP, int edmg, string callback);
+void bandit_battle();
+void mirror_battle();
+void child_battle();
+void mushroom_battle();
 /////////////////////////////////////////////////////////////////
 void spacer();
 void setColor(int color);
@@ -29,8 +29,10 @@ void intro();
 std::vector<std::string> splitString(const std::string& input, char delimiter);
 void escapeEnemy();
 int rarityToColor(int rar);
+void playNote(int frequency, int duration);
+void playIntroMusic();
 void renderPlayer();
-void biomeNameIntroduction(string biomeName);
+void death();
 void biome1(); void Biome1();
 void biome1Battle();
 void openStore();
@@ -42,6 +44,7 @@ void equipItem();
 void equipItemConfirmation(int position);
 
 string nick;
+int SzansaNaPOTWORA = 95;
 int HP = 100; int maxHP = 100; int DMG = 5;
 int gold = 590015209; int lvl = 0; int XP = 99; int maxXP = 100;
 int heldItem = 0;
@@ -49,8 +52,6 @@ int heldItem = 0;
 string gameState;
 string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Żarowy Rzeźnik|30|0|2", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Runiczne Ostrze Norvastyru|70|900|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
 int inventory[5];
-int defeatedEnemies = 0;
-bool introducedToBiomeName = false;
 
 int main()
 {
@@ -70,7 +71,14 @@ int main()
 void initializeGameState()
 {
     if(gameState == "Menu") renderMenu();
-    else if(gameState == "IntroSequence") intro();
+    else if(gameState == "IntroSequence")
+        {
+            thread music(playIntroMusic);
+            thread text(intro);
+
+            music.join();
+            text.join();
+        }
     else if(gameState == "Biome1") biome1();
     else if(gameState == "Biome1Battle") biome1Battle();
 }
@@ -222,27 +230,33 @@ void escapeEnemy()
     cout << "     [ Uciekłeś od przeciwnika. Wstyd... ]" << endl;
     spacer();
     Sleep(1000);
-    if(gameState == "Biome1Battle")
-        changeGameState("Biome1");
-
+    changeGameState("Biome1");
 }
 
-void biomeNameIntroduction(string biomeName)
+void death()
 {
-    if(!introducedToBiomeName)
+    system("cls");
+    spacer();
+    Sleep(500);
+    cout << "     [ Zostałeś pokonany. ]" << endl;
+    Sleep(100);
+    renderStats();
+    spacer();
+    cout << "Wciśnij dowolny klawisz, aby kontynuować." << endl;
+
+    char inp = getch();
+    if(inp == inp)
     {
-        system("cls");
-        cout << "                           [ " << biomeName << " ]" << endl;
-        Sleep(2000);
-        system("cls");
-        introducedToBiomeName = true;
+        changeGameState("Menu");
     }
 }
 
 void biome1()
 {
     system("cls");
-    biomeNameIntroduction("Kamienne Katakumby");
+    cout << "                           [ Kamienne Katakumby ]" << endl;
+    Sleep(2000);
+    system("cls");
     renderStats();
     spacer();
     renderPlayer();
@@ -295,30 +309,48 @@ void Biome1()
 
 void biome1Battle()
 {
-   int randomMOB = rand()% 101;
-   if(defeatedEnemies == 5)
-    BOSS1_battle();
-    else if(randomMOB <= 55) // 55%
-        mushroom_battle(25, 3, "Biome1");
+   int randomMOB = rand()% SzansaNaPOTWORA;
+   if(randomMOB <= 55) // 55%
+    mushroom_battle();
     else if(randomMOB <= 80) // 25%
-        child_battle(50, 8, "Biome1");
-    else if(randomMOB <= 95) // 15%
-        mirror_battle(125, "Biome1");
-    else if(randomMOB <= 99) // 4%
-        bandit_battle(150, 15, "Biome1");
-    else if(randomMOB <= 100) // boss 1%
+    child_battle();
+    else if(randomMOB <= 95) // 15% - aby odblokować 1 zabójstwo wymagane
+    mirror_battle();
+    else if(randomMOB <= 99) // 4% - aby odblokować 5 zabójstw wymagane
+    bandit_battle();
+    else if(randomMOB <= 100) // boss 1% - aby odblokować 6 zabójstwo wymagane
         BOSS1_battle();
 }
 
-void mushroom_battle(int emaxHP, int edmg, string callback)
+void mushroom_battle()
 {
     int run_mushroom = rand()%5+1;
-    int HP_mushroom = emaxHP;
+    int HP_mushroom = 25;
     int reward_mushroom = rand()%5 + 1;
     int xp_mushroom = rand()%5 + 1;
     system("cls");
     renderStats();
-    cout << "       |       [ GRZYB ] "; setColor(4); cout << "HP: " << HP_mushroom << "/" << emaxHP; setColor(7);
+    cout << "       |       [ GRZYB ] "; setColor(4); cout << "HP: " << HP_mushroom << "/25"; setColor(7);
+    spacer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                           " << endl;
+    cout << "   █   ▄   █                                           " << endl;
+    cout << "    █     █                                  ▄▄▄▄▄▄    " << endl;
+    cout << "    ▄█████▄                               ▄██████████▄ " << endl;
+    cout << "   █  ███  █                              ██◉ ████◉ ██ " << endl;
+    cout << "     ▄███▄                                █████▄▄█████ " << endl;
+    cout << "    █     █                                   ████     " << endl;
+    cout << "   ▄█     █▄                                  ████     " << endl;
+    Sleep(500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
+    do{
+        Sleep(1000);
+    system("cls");
+    renderStats();
+    cout << "       |       [ GRZYB ] "; setColor(4); cout << "HP: " << HP_mushroom << "/25"; setColor(7);
     spacer();
     cout << "     █████                                             " << endl;
     cout << "    █     █                                            " << endl;
@@ -333,78 +365,58 @@ void mushroom_battle(int emaxHP, int edmg, string callback)
     spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    spacer();
-    do{
-        system("cls");
-        renderStats();
-        cout << "       |       [ GRZYB ] "; setColor(4); cout << "HP: " << HP_mushroom << "/" << emaxHP; setColor(7);
-        spacer();
-        cout << "     █████                                             " << endl;
-        cout << "    █     █                                            " << endl;
-        cout << "   █   ◉ ◉ █                                           " << endl;
-        cout << "   █   ▄   █                                           " << endl;
-        cout << "    █     █                                  ▄▄▄▄▄▄    " << endl;
-        cout << "    ▄█████▄                               ▄██████████▄ " << endl;
-        cout << "   █  ███  █                              ██◉ ████◉ ██ " << endl;
-        cout << "     ▄███▄                                █████▄▄█████ " << endl;
-        cout << "    █     █                                   ████     " << endl;
-        cout << "   ▄█     █▄                                  ████     " << endl;
-        spacer();
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-        spacer();
-        char atk;
-        do
-        atk = getch();
-        while(atk!='a' && atk!='u');
-        switch (atk)
-        {
-            case 'a':  HP_mushroom = HP_mushroom - DMG; break;
-            case 'u':
-                if(run_mushroom >= 3)
-                    escapeEnemy();
-                else{
-                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ]";
-                    Sleep(300);
-                    };
-                    run_mushroom = rand()%5+1; break;
-        }
-        cout << endl << "[ PRZECIWNIK MA " << HP_mushroom << "/" << emaxHP << " HP ]" << endl;
+    char atk;
+    do
+    atk = getch();
+    while(atk!='a' && atk!='u');
+    switch (atk)
+    {
+        case 'a':  HP_mushroom = HP_mushroom - DMG; break;
+        case 'u':
+            if(run_mushroom >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_mushroom = rand()%5+1; break;
+    }
+    cout << endl << "[ PRZECIWNIK MA " << HP_mushroom << "/" << "25 HP ]" << endl;
+    Sleep(100);
+    if(HP_mushroom <= 0){
+        cout << "[ POKONAŁEŚ GRZYBA!]" << endl << endl;
+        cout << "[ OTRZYMAŁEŚ: " << reward_mushroom << " ZŁOTA ORAZ " << xp_mushroom << "XP";
+        gold = gold + reward_mushroom;
+        XP = XP + xp_mushroom;
+        if(SzansaNaPOTWORA<115)
+            SzansaNaPOTWORA += 1;
+        Sleep(2000);
+        Biome1();
+    }
+            else{
+        HP = HP - 3;
+        cout << "[ STRACIŁEŚ 3 HP]" << endl;
         Sleep(100);
-        if(HP_mushroom <= 0){
-            cout << "[ POKONAŁEŚ GRZYBA! ]" << endl << endl;
-            cout << "[ OTRZYMAŁEŚ: " << reward_mushroom << " ZŁOTA ORAZ " << xp_mushroom << "XP" << " ]";
-            gold = gold + reward_mushroom;
-            XP = XP + xp_mushroom;
-            Sleep(2000);
-            defeatedEnemies++;
-            changeGameState(callback);
-        }
-                else{
-            HP = HP - edmg;
-            cout << "[ STRACIŁEŚ " << edmg << " HP ]" << endl;
-            Sleep(100);
-                }
-        if(HP <= 0){
-            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
-            gold = gold - (gold/20);
-            HP = maxHP*0.5;
-            Sleep(2000);
-            introducedToBiomeName = false;
-            changeGameState(callback);
-        }
+            }
+    if(HP <= 0){
+        cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+        gold = gold - (gold/20);
+        HP = maxHP*0.5;
+        Sleep(2000);
+        Biome1();
+    }
     }while(HP_mushroom >= 0);
 }
-void child_battle(int emaxHP, int edmg, string callback)
+void child_battle()
 {
     int run_child = rand()%5+1;
-    int HP_child = emaxHP;
+    int HP_child = 50;
     int reward_child = rand()%11 + 5;
     int xp_child = rand()%11 + 5;
     system("cls");
@@ -420,81 +432,81 @@ void child_battle(int emaxHP, int edmg, string callback)
     cout << "     ▄███▄                                ▄▄▀██████▀▀  " << endl;
     cout << "    █     █                                  ██████    " << endl;
     cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
+    Sleep(500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
+    do{
+        Sleep(1250);
+    system("cls");
+    renderStats();
+    cout << "       |       [ ZŁE DZIECKO ] "; setColor(4); cout << "HP: " << HP_child << "/50"; setColor(7);
+    spacer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                           " << endl;
+    cout << "   █   ▄   █                                           " << endl;
+    cout << "    █     █                                  ▄▀▀▀▀▄    " << endl;
+    cout << "    ▄█████▄                                  █◉ ◉ █    " << endl;
+    cout << "   █  ███  █                                  ▀██▀   ▄ " << endl;
+    cout << "     ▄███▄                                ▄▄▀██████▀▀  " << endl;
+    cout << "    █     █                                  ██████    " << endl;
+    cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
     spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    spacer();
-    do{
-        system("cls");
-        renderStats();
-        cout << "       |       [ ZŁE DZIECKO ] "; setColor(4); cout << "HP: " << HP_child << "/" << emaxHP; setColor(7);
-        spacer();
-        cout << "     █████                                             " << endl;
-        cout << "    █     █                                            " << endl;
-        cout << "   █   ◉ ◉ █                                           " << endl;
-        cout << "   █   ▄   █                                           " << endl;
-        cout << "    █     █                                  ▄▀▀▀▀▄    " << endl;
-        cout << "    ▄█████▄                                  █◉ ◉ █    " << endl;
-        cout << "   █  ███  █                                  ▀██▀   ▄ " << endl;
-        cout << "     ▄███▄                                ▄▄▀██████▀▀  " << endl;
-        cout << "    █     █                                  ██████    " << endl;
-        cout << "   ▄█     █▄                                ▄██▀▀██▄   " << endl;
-        spacer();
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-        spacer();
-        char atk;
-        do
-        atk = getch();
-        while(atk!='a' && atk!='u');
-        switch (atk)
-        {
-            case 'a':  HP_child = HP_child - DMG; break;
-            case 'u':
-                if(run_child >= 3)
-                    escapeEnemy();
-                else{
-                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ]";
-                    Sleep(300);
-                    };
-                    run_child = rand()%5+1; break;
-        }
-        cout << endl << "[ PRZECIWNIK MA " << HP_child << "/" << emaxHP << " HP ]" << endl;
+    char atk;
+    do
+    atk = getch();
+    while(atk!='a' && atk!='u');
+    switch (atk)
+    {
+        case 'a':  HP_child = HP_child - DMG; break;
+        case 'u':
+            if(run_child >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_child = rand()%5+1; break;
+    }
+    cout << endl << "[ PRZECIWNIK MA " << HP_child << "/" << "50 HP ]" << endl;
+    Sleep(100);
+    if(HP_child <= 0){
+        cout << "[ POKONAŁEŚ ZŁE DZIECKO!]" << endl << endl;
+        cout << "[ OTRZYMAŁEŚ: " << reward_child << " ZŁOTA ORAZ " << xp_child << "XP";
+        gold = gold + reward_child;
+        XP = XP + xp_child;
+        if(SzansaNaPOTWORA<115)
+            SzansaNaPOTWORA += 1;
+        Sleep(2000);
+        Biome1();
+    }
+            else{
+        HP = HP - 8;
+        cout << "[ STRACIŁEŚ 8 HP]" << endl;
         Sleep(100);
-        if(HP_child <= 0){
-            cout << "[ POKONAŁEŚ ZŁE DZIECKO!]" << endl << endl;
-            cout << "[ OTRZYMAŁEŚ: " << reward_child << " ZŁOTA ORAZ " << xp_child << "XP" << " ]";
-            gold = gold + reward_child;
-            XP = XP + xp_child;
-            Sleep(2000);
-            defeatedEnemies++;
-            changeGameState(callback);
-        }
-                else{
-            HP = HP - edmg;
-            cout << "[ STRACIŁEŚ " << edmg << " HP ]" << endl;
-            Sleep(100);
-                }
-        if(HP <= 0){
-            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
-            gold = gold - (gold/20);
-            HP = maxHP*0.5;
-            Sleep(2000);
-            introducedToBiomeName = false;
-            changeGameState(callback);
-        }
+            }
+    if(HP <= 0){
+        cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+        gold = gold - (gold/20);
+        HP = maxHP*0.5;
+        Sleep(2000);
+        Biome1();
+    }
     }while(HP_child >= 0);
 }
-void mirror_battle(int emaxHP, string callback)
+void mirror_battle()
 {
     int run_mirror = rand()%5+1;
-    int HP_mirror = emaxHP;
+    int HP_mirror = 125;
     int reward_mirror = rand()%11 + 15;
     int xp_mirror = rand()%11 + 15;
     system("cls");
@@ -510,78 +522,78 @@ void mirror_battle(int emaxHP, string callback)
     cout << "     ▄███▄                                    █░░░◉░░█ " << endl;
     cout << "    █     █                                   ▀▄▄▄▄▄▄▀ " << endl;
     cout << "   ▄█     █▄                                  █      █ " << endl;
+    Sleep(500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
+    do{
+        Sleep(1250);
+    system("cls");
+    renderStats();
+    cout << "       |       [ LUSTRO ] "; setColor(4); cout << "HP: " << HP_mirror << "/125"; setColor(7);
+    spacer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                  ▄▀▀▀▀▀▀▄ " << endl;
+    cout << "   █   ▄   █                                  █░░░◉░◉█ " << endl;
+    cout << "    █     █                                   █░◉░░░░█ " << endl;
+    cout << "    ▄█████▄                                   █░░░░◉░█ " << endl;
+    cout << "   █  ███  █                                  █░◉░░░░█ " << endl;
+    cout << "     ▄███▄                                    █░░░◉░░█ " << endl;
+    cout << "    █     █                                   ▀▄▄▄▄▄▄▀ " << endl;
+    cout << "   ▄█     █▄                                  █      █ " << endl;
     spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    spacer();
-    do{
-        system("cls");
-        renderStats();
-        cout << "       |       [ LUSTRO ] "; setColor(4); cout << "HP: " << HP_mirror << "/" << emaxHP; setColor(7);
-        spacer();
-        cout << "     █████                                             " << endl;
-        cout << "    █     █                                            " << endl;
-        cout << "   █   ◉ ◉ █                                  ▄▀▀▀▀▀▀▄ " << endl;
-        cout << "   █   ▄   █                                  █░░░◉░◉█ " << endl;
-        cout << "    █     █                                   █░◉░░░░█ " << endl;
-        cout << "    ▄█████▄                                   █░░░░◉░█ " << endl;
-        cout << "   █  ███  █                                  █░◉░░░░█ " << endl;
-        cout << "     ▄███▄                                    █░░░◉░░█ " << endl;
-        cout << "    █     █                                   ▀▄▄▄▄▄▄▀ " << endl;
-        cout << "   ▄█     █▄                                  █      █ " << endl;
-        spacer();
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-        spacer();
-        char atk;
-        do
-        atk = getch();
-        while(atk!='a' && atk!='u');
-        switch (atk)
-        {
-            case 'a':  HP_mirror = HP_mirror - DMG; break;
-            case 'u':
-                if(run_mirror >= 3)
-                    escapeEnemy();
-                else{
-                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ]";
-                    Sleep(300);
-                    };
-                    run_mirror = rand()%5+1; break;
-        }
-        cout << endl << "[ PRZECIWNIK MA " << HP_mirror << "/" << "125 HP ]" << endl;
+    char atk;
+    do
+    atk = getch();
+    while(atk!='a' && atk!='u');
+    switch (atk)
+    {
+        case 'a':  HP_mirror = HP_mirror - DMG; break;
+        case 'u':
+            if(run_mirror >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_mirror = rand()%5+1; break;
+    }
+    cout << endl << "[ PRZECIWNIK MA " << HP_mirror << "/" << "125 HP ]" << endl;
+    Sleep(100);
+    if(HP_mirror <= 0){
+        cout << "[ POKONAŁEŚ SWOJE ODBICIE!]" << endl << endl;
+        cout << "[ OTRZYMAŁEŚ: " << reward_mirror << " ZŁOTA ORAZ " << xp_mirror << "XP";
+        gold = gold + reward_mirror;
+        XP = XP + xp_mirror;
+        if(SzansaNaPOTWORA<115)
+            SzansaNaPOTWORA += 1;
+        Sleep(2000);
+        Biome1();
+    }
+            else{
+        HP = HP - DMG;
+        cout << "[ STRACIŁEŚ " << DMG << " HP ]" << endl;
         Sleep(100);
-        if(HP_mirror <= 0){
-            cout << "[ POKONAŁEŚ SWOJE ODBICIE! ]" << endl << endl;
-            cout << "[ OTRZYMAŁEŚ: " << reward_mirror << " ZŁOTA ORAZ " << xp_mirror << "XP" << " ]";
-            gold = gold + reward_mirror;
-            XP = XP + xp_mirror;
-            Sleep(2000);
-            defeatedEnemies++;
-            changeGameState(callback);
-        }
-                else{
-            HP = HP - DMG;
-            cout << "[ STRACIŁEŚ " << DMG << " HP ]" << endl;
-            Sleep(100);
-                }
-        if(HP <= 0){
-            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
-            gold = gold - (gold/20);
-            HP = maxHP*0.5;
-            Sleep(2000);
-            introducedToBiomeName = false;
-            changeGameState(callback);
-        }
+            }
+    if(HP <= 0){
+        cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+        gold = gold - (gold/20);
+        HP = maxHP*0.5;
+        Sleep(2000);
+        Biome1();
+    }
     }while(HP_mirror >= 0);
 }
-void bandit_battle(int emaxHP, int edmg, string callback)
+void bandit_battle()
 {
     int run_bandit = rand()%5+1;
     int HP_bandit = 150;
@@ -600,75 +612,75 @@ void bandit_battle(int emaxHP, int edmg, string callback)
     cout << "     ▄███▄                               ▀   ▄███▄   " << endl;
     cout << "    █     █                                 █     █  " << endl;
     cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
+    Sleep(500);
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    Sleep(1750);
+    do{
+        Sleep(1250);
+    system("cls");
+    renderStats();
+    cout << "       |       [ BANDYTA ] "; setColor(4); cout << "HP: " << HP_bandit << "/150"; setColor(7);
+    spacer();
+    cout << "     █████                                   ▄▄▄▄▄   " << endl;
+    cout << "    █     █                                 █     █  " << endl;
+    cout << "   █   ◉ ◉ █                               █ ◉ ◉   █ " << endl;
+    cout << "   █   ▄   █                               █▓▓▓▓▓▓▓█ " << endl;
+    cout << "    █     █                              ▐  █▓▓▓▓▓█  " << endl;
+    cout << "    ▄█████▄                              ▐  ▄▀███▀▄  " << endl;
+    cout << "   █  ███  █                             █▄▀  ███  █ " << endl;
+    cout << "     ▄███▄                               ▀   ▄███▄   " << endl;
+    cout << "    █     █                                 █     █  " << endl;
+    cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
     spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-    spacer();
-    do{
-        system("cls");
-        renderStats();
-        cout << "       |       [ BANDYTA ] "; setColor(4); cout << "HP: " << HP_bandit << "/150"; setColor(7);
-        spacer();
-        cout << "     █████                                   ▄▄▄▄▄   " << endl;
-        cout << "    █     █                                 █     █  " << endl;
-        cout << "   █   ◉ ◉ █                               █ ◉ ◉   █ " << endl;
-        cout << "   █   ▄   █                               █▓▓▓▓▓▓▓█ " << endl;
-        cout << "    █     █                              ▐  █▓▓▓▓▓█  " << endl;
-        cout << "    ▄█████▄                              ▐  ▄▀███▀▄  " << endl;
-        cout << "   █  ███  █                             █▄▀  ███  █ " << endl;
-        cout << "     ▄███▄                               ▀   ▄███▄   " << endl;
-        cout << "    █     █                                 █     █  " << endl;
-        cout << "   ▄█     █▄                               ▄█     █▄ " << endl;
-        spacer();
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
-        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
-        spacer();
-        char atk;
-        do
-        atk = getch();
-        while(atk!='a' && atk!='u');
-        switch (atk)
-        {
-            case 'a':  HP_bandit = HP_bandit - DMG; break;
-            case 'u':
-                if(run_bandit >= 3)
-                    escapeEnemy();
-                else{
-                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ]";
-                    Sleep(300);
-                    };
-                    run_bandit = rand()%5+1; break;
-        }
-        cout << endl << "[ PRZECIWNIK MA " << HP_bandit << "/" << "150 HP ]" << endl;
+    char atk;
+    do
+    atk = getch();
+    while(atk!='a' && atk!='u');
+    switch (atk)
+    {
+        case 'a':  HP_bandit = HP_bandit - DMG; break;
+        case 'u':
+            if(run_bandit >= 3)
+                escapeEnemy();
+            else{
+                cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(300);
+                };
+                run_bandit = rand()%5+1; break;
+    }
+    cout << endl << "[ PRZECIWNIK MA " << HP_bandit << "/" << "150 HP ]" << endl;
+    Sleep(100);
+    if(HP_bandit <= 0){
+        cout << "[ POKONAŁEŚ BANDYTĘ!]" << endl << endl;
+        cout << "[ OTRZYMAŁEŚ: " << reward_bandit << " ZŁOTA ORAZ " << xp_bandit << "XP";
+        gold = gold + reward_bandit;
+        XP = XP + xp_bandit;
+        if(SzansaNaPOTWORA<115)
+            SzansaNaPOTWORA += 1;
+        Sleep(2000);
+        Biome1();
+    }
+            else{
+        HP = HP - 15;
+        cout << "[ STRACIŁEŚ 15 HP]" << endl;
         Sleep(100);
-        if(HP_bandit <= 0){
-            cout << "[ POKONAŁEŚ BANDYTĘ! ]" << endl << endl;
-            cout << "[ OTRZYMAŁEŚ: " << reward_bandit << " ZŁOTA ORAZ " << xp_bandit << "XP" << " ]";
-            gold = gold + reward_bandit;
-            XP = XP + xp_bandit;
-            Sleep(2000);
-            defeatedEnemies++;
-            changeGameState(callback);
-        }
-                else{
-            HP = HP - 15;
-            cout << "[ STRACIŁEŚ 15 HP ]" << endl;
-            Sleep(100);
-                }
-        if(HP <= 0){
-            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
-            gold = gold - (gold/20);
-            HP = maxHP*0.5;
-            Sleep(2000);
-            introducedToBiomeName = false;
-            changeGameState(callback);
-        }
+            }
+    if(HP <= 0){
+        cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+        gold = gold - (gold/20);
+        HP = maxHP*0.5;
+        Sleep(2000);
+        Biome1();
+    }
     }while(HP_bandit >= 0);
 }
 void BOSS1_battle()
@@ -708,81 +720,105 @@ void BOSS1_battle()
     cout << "     ▄███▄                ▀▀        ███    ███         ▀▀      " << endl;
     cout << "    █     █                        ███▀    ▀███                " << endl;
     cout << "   ▄█     █▄                     ▄████▄    ▄████▄              " << endl;
-    spacer();
+    Sleep(500);
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
-    spacer();
+    Sleep(1750);
     do{
-        system("cls");
-        renderStats();
-        cout << "       |       [ GOLEM ] "; setColor(4); cout << "HP: " << HP_GOLEM << "/300"; setColor(7);
-        spacer();
-        cout << "                                   ▄▀▀▀▀▀▀▀▀▀▄                 " << endl;
-        cout << "                                  █░ ░  ░  ░░ █                " << endl;
-        cout << "                                 █   █ ░ █  ░░ █               " << endl;
-        cout << "                                █ ░░      ░    ░█              " << endl;
-        cout << "                                █░  █▀█▀█▀█▀█ ░ █              " << endl;
-        cout << "                                 █ ░ ▄ ▄ ▄ ▄   █               " << endl;
-        cout << "                                  █ ▀▀▀▀▀▀▀▀▀░█                " << endl;
-        cout << "                               ████████████████████            " << endl;
-        cout << "     █████                   ███▀▀██░█░░█░░█░░██▀▀███          " << endl;
-        cout << "    █     █                 ███   ███░░█░░░░░███   ███         " << endl;
-        cout << "   █   ◉ ◉ █               ██░█   ██░█░░░█░░█░██    █░██       " << endl;
-        cout << "   █   ▄   █              ████    ███░█░░░░█░███     ████      " << endl;
-        cout << "    █     █              ██░██      ██████████       ██░██     " << endl;
-        cout << "    ▄█████▄              █░░██        ██████         ██░░█     " << endl;
-        cout << "   █  ███  █             ████        ███  ███         ████     " << endl;
-        cout << "     ▄███▄                ▀▀        ███    ███         ▀▀      " << endl;
-        cout << "    █     █                        ███▀    ▀███                " << endl;
-        cout << "   ▄█     █▄                     ▄████▄    ▄████▄              " << endl;
-        char atk;
-        do
-        atk = getch();
-        while(atk!='a' && atk!='u');
-        switch (atk)
-        {
-            case 'a':
-                if(unik_GOLEM >= 2)
-                    HP_GOLEM = HP_GOLEM - DMG;
-                else{
-                    cout << "[ GOLEM ZROBIŁ UNIK";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ";
-                    Sleep(300);
-                    cout << ". ]";
-                    Sleep(500);
-                    }
-                    unik_GOLEM = rand()%4; break;
-            case 'u': cout << "[ BRAK MOŻLIWOŚCI UCIECZKI. ]" << endl; Sleep(200); break;
-            default: cout << "[ STRACIŁEŚ OKAZJĘ NA ATAK... A PRZECIWNIK JĄ WYKORZYSTAŁ ]" << endl; Sleep(1500); break;
-        }
-        cout << endl << "[ PRZECIWNIK MA " << HP_GOLEM << "/" << "300 HP ]" << endl;
-        Sleep(100);
-        if(HP_GOLEM <= 0){
-            cout << "[ POKONAŁEŚ PIERWSZEGO BOSSA GOLEM'a! ]" << endl << endl;
-            cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP" << " ]";
-            gold = gold + reward_GOLEM;
-            XP = XP + xp_GOLEM;
-            Sleep(2000);
-            defeatedEnemies = 0;
-            changeGameState("Biome2");
-        }
-                else{
-            HP = HP - 10;
-            cout << "[ STRACIŁEŚ 10 HP]" << endl;
-            Sleep(100);
+        Sleep(1250);
+    system("cls");
+    renderStats();
+    cout << "       |       [ GOLEM ] "; setColor(4); cout << "HP: " << HP_GOLEM << "/300"; setColor(7);
+    spacer();
+    cout << "                                   ▄▀▀▀▀▀▀▀▀▀▄                 " << endl;
+    cout << "                                  █░ ░  ░  ░░ █                " << endl;
+    cout << "                                 █   █ ░ █  ░░ █               " << endl;
+    cout << "                                █ ░░      ░    ░█              " << endl;
+    cout << "                                █░  █▀█▀█▀█▀█ ░ █              " << endl;
+    cout << "                                 █ ░ ▄ ▄ ▄ ▄   █               " << endl;
+    cout << "                                  █ ▀▀▀▀▀▀▀▀▀░█                " << endl;
+    cout << "                               ████████████████████            " << endl;
+    cout << "     █████                   ███▀▀██░█░░█░░█░░██▀▀███          " << endl;
+    cout << "    █     █                 ███   ███░░█░░░░░███   ███         " << endl;
+    cout << "   █   ◉ ◉ █               ██░█   ██░█░░░█░░█░██    █░██       " << endl;
+    cout << "   █   ▄   █              ████    ███░█░░░░█░███     ████      " << endl;
+    cout << "    █     █              ██░██      ██████████       ██░██     " << endl;
+    cout << "    ▄█████▄              █░░██        ██████         ██░░█     " << endl;
+    cout << "   █  ███  █             ████        ███  ███         ████     " << endl;
+    cout << "     ▄███▄                ▀▀        ███    ███         ▀▀      " << endl;
+    cout << "    █     █                        ███▀    ▀███                " << endl;
+    cout << "   ▄█     █▄                     ▄████▄    ▄████▄              " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    char atk;
+    do
+    atk = getch();
+    while(atk!='a');
+    switch (atk)
+    {
+        case 'a':
+            if(unik_GOLEM >= 2)
+                HP_GOLEM = HP_GOLEM - DMG;
+            else{
+                cout << "[ GOLEM ZROBIŁ UNIK";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ";
+                Sleep(300);
+                cout << ". ]";
+                Sleep(500);
                 }
-        if(HP <= 0){
-            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
-            gold = gold - (gold/20);
-            HP = maxHP*0.5;
-            Sleep(2000);
-            introducedToBiomeName = false;
-            changeGameState("Biome2");
-        }
+                unik_GOLEM = rand()%4; break;
+        default: cout << "[ STRACIŁEŚ OKAZJĘ NA ATAK... A PRZECIWNIK JĄ WYKORZYSTAŁ ]" << endl; Sleep(1500); break;
+    }
+    cout << endl << "[ PRZECIWNIK MA " << HP_GOLEM << "/" << "300 HP ]" << endl;
+    Sleep(100);
+    if(HP_GOLEM <= 0){
+        cout << "[ POKONAŁEŚ PIERWSZEGO BOSSA GOLEM'a!]" << endl << endl;
+        cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP";
+        gold = gold + reward_GOLEM;
+        XP = XP + xp_GOLEM;
+        if(SzansaNaPOTWORA<115)
+            SzansaNaPOTWORA += 1;
+        Sleep(2000);
+        Biome1();
+    }
+            else{
+        HP = HP - 10;
+        cout << "[ STRACIŁEŚ 10 HP]" << endl;
+        Sleep(100);
+            }
+    if(HP <= 0){
+        cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+        gold = gold - (gold/20);
+        HP = maxHP*0.5;
+        Sleep(2000);
+        Biome1();
+    }
     }while(HP_GOLEM >= 0);
+}
+
+void playNote(int frequency, int duration) {
+    Beep(frequency, duration);
+    Sleep(100); // Pause
+}
+
+void playIntroMusic() {
+    playNote(392, 400);  // G4
+    playNote(349, 400);  // F4
+    playNote(330, 500);  // E4
+    Sleep(200); // Pause
+
+    playNote(294, 300);  // D4
+    playNote(349, 300);  // F4
+    playNote(392, 400);  // G4
+    Sleep(200); // Pause
+
+    playNote(440, 400);  // A4
+    playNote(392, 400);  // G4
+    playNote(349, 500);  // F4
+    playNote(330, 700);  // E4
 }
 
 std::vector<std::string> splitString(const std::string& input, char delimiter) {
@@ -807,7 +843,6 @@ int rarityToColor(int rar)
         case 3: return 5; break;
         case 4: return 6; break;
         case 5: return 14; break;
-        case 6: return 15; break;
     }
 }
 
@@ -849,7 +884,7 @@ void openInventory()
 
 void openStore()
 {
-    int storeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 22};
+    int storeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11, 12};
     system("cls");
     cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << ", aby powrócić." << endl << endl;
     setColor(6); cout << "  [ ZŁOTO NA KONCIE: " << gold << " ]" << endl << endl << endl; setColor(7);
@@ -874,6 +909,8 @@ void openStore()
 
 void dropItem()
 {
+    system("cls");
+    openInventory();
     cout << "  --------------------------------------------" << endl;
     setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
     setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Wyrzucenie przedmiotu z ekwipunku jest równoznaczne z jego zniszczeniem." << endl;
@@ -882,11 +919,11 @@ void dropItem()
     char delItem = tolower(getch());
     switch (delItem)
     {
-        case '1': inventory[0] = 0; openInventory(); break;
-        case '2': inventory[1] = 0; openInventory(); break;
-        case '3': inventory[2] = 0; openInventory(); break;
-        case '4': inventory[3] = 0; openInventory(); break;
-        case '5': inventory[4] = 0; openInventory(); break;
+        case '1': inventory[0] = 0; break;
+        case '2': inventory[1] = 0; break;
+        case '3': inventory[2] = 0; break;
+        case '4': inventory[3] = 0; break;
+        case '5': inventory[4] = 0; break;
         case 'x': openInventory(); break;
         default: openInventory(); break;
     }
@@ -906,10 +943,12 @@ void assignToInventory(int item)
 void buyItem(int* offer)
 {
     cout << "  --------------------------------------------" << endl;
-    setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
-    setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Tej akcji nie można cofnąć." << endl << endl;
     cout << "  Kliknij przycisk od 1 do 9, aby kupić przedmiot." << endl;
-    char inp = getch();
+    setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
+    char inp;
+    do
+    inp = getch();
+    while(inp!='1' && inp!='2' && inp!='3' && inp!='4' && inp!='5' && inp!='6' && inp!='7' && inp!='8' && inp!='9' && inp!='x');
     switch (inp)
     {
         case '1': buyItemConfirmation(offer[0]); break;
@@ -934,16 +973,16 @@ void buyItemConfirmation(int item)
     if(stoi(itemToGet[2]) > gold)
     {
         cout << "  Niewystarczające środki, aby kupić "; setColor(rarityToColor(stoi(itemToGet[3]))); cout << itemToGet[0]; setColor(7); cout << "." << endl;
-        Sleep(1000);
+        Sleep(1500);
         openStore();
     }
     else
     {
-        setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl;
-        setColor(4); cout << endl << "  [C]"; setColor(7); cout << " Potwierdź" << endl << endl;
-        setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Tej akcji nie można cofnąć." << endl << endl;
         cout << "  Kupujesz: "; setColor(rarityToColor(stoi(itemToGet[3]))); cout << itemToGet[0] << endl; setColor(7);
         cout << "  Ta operacja odejmie " << itemToGet[2] << " złota z twojego konta." << endl;
+        setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Tej akcji nie można cofnąć." << endl << endl;
+        setColor(4); cout << endl << "  [C]"; setColor(7); cout << " Potwierdź" << endl << endl;
+        setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl;
         char inp = tolower(getch());
         switch (inp)
         {
