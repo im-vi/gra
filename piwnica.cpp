@@ -296,7 +296,7 @@ void biome1()
     system("cls");
     biomeNameIntroduction("Kamienne Katakumby");
     biomeControls(true);
-    int biomeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 22};
+    int biomeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11};
 
     char inp = getch();
     switch (inp)
@@ -312,7 +312,7 @@ void Biome1()
 {
     system("cls");
     biomeControls(false);
-    int biomeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 22};
+    int biomeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11};
 
     char inp = getch();
     switch (inp)
@@ -1095,7 +1095,7 @@ void biome2()
     system("cls");
     biomeNameIntroduction("Zamrożona Twierdza");
     biomeControls(true);
-    int biomeOffer[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int biomeOffer[] = {12, 13, 14, 15, 16, 17, 18, 19, 20};
 
     char inp = getch();
     switch (inp)
@@ -1111,7 +1111,7 @@ void Biome2()
 {
     system("cls");
     biomeControls(false);
-    int biomeOffer[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int biomeOffer[] = {12, 13, 14, 15, 16, 17, 18, 19, 20};
 
     char inp = getch();
     switch (inp)
