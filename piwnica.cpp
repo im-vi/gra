@@ -15,6 +15,11 @@ void mirror_battle(int emaxHP, string callback);
 void child_battle(int emaxHP, int edmg, string callback);
 void mushroom_battle(int emaxHP, int edmg, string callback);
 void BOSS2_battle();
+void BOSS22_battle();
+void straznik_lodu_battle(int emaxHP, int edmg, string callback);
+void posag_lodu_battle(int emaxHP, int edmg, string callback);
+void balwan_battle(int emaxHP, int edmg, string callback);
+void gwiazdka_battle(int emaxHP, int edmg, string callback);
 /////////////////////////////////////////////////////////////////
 void spacer();
 void setColor(int color);
@@ -37,7 +42,7 @@ void biome1(); void Biome1();
 void healMenu(int storeOffer);
 void healItemConfirmation(int value, int price, int* offer);
 void heal(int value);
-void biome1Battle();
+void Biome1Battle();
 void openStore(int storeOffer[]);
 void dropItem();
 void assignToInventory(int item);
@@ -47,13 +52,13 @@ void equipItem();
 void equipItemConfirmation(int position);
 void biome2();
 void Biome2();
-void biome2Battle();
+void Biome2Battle();
 
 string nick;
 int HP = 90; int maxHP = 100; int DMG = 5;
 int gold = 590015209; int lvl = 0; int XP = 99; int maxXP = 100;
 int heldItem = 0;
-// Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Battle, Biome2Boss, Biome3, Biome3Battle, Biome3Boss, EndSequence
+// Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Battle, Biome2Boss, EndSequence
 string gameState;
 string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Żarowy Rzeźnik|30|0|2", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Runiczne Ostrze Norvastyru|70|900|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
 int inventory[5];
@@ -80,10 +85,10 @@ void initializeGameState()
     if(gameState == "Menu") renderMenu();
     else if(gameState == "IntroSequence") intro();
     else if(gameState == "Biome1") biome1();
-    else if(gameState == "Biome1Battle") biome1Battle();
+    else if(gameState == "Biome1Battle") Biome1Battle();
     else if(gameState == "Biome1Boss") BOSS1_battle();
     else if(gameState == "Biome2") biome2();
-    else if(gameState == "Biome2Battle") biome2Battle();
+    else if(gameState == "Biome2Battle") Biome2Battle();
     else if(gameState == "Biome2Boss") BOSS2_battle();
 }
 
@@ -324,10 +329,10 @@ void Biome1()
     }
 }
 
-void biome1Battle()
+void Biome1Battle()
 {
    int randomMOB = rand()% 101;
-   if(defeatedEnemies == 5)
+   if(defeatedEnemies == 10)
     changeGameState("Biome1Boss");
     else if(randomMOB <= 55) // 55%
         mushroom_battle(25, 3, "Biome1");
@@ -800,8 +805,8 @@ void BOSS1_battle()
             cout << "[ OTRZYMAŁEŚ: " << reward_GOLEM << " ZŁOTA ORAZ " << xp_GOLEM << "XP" << " ]";
             gold = gold + reward_GOLEM;
             XP = XP + xp_GOLEM;
-            Sleep(2000);
             defeatedEnemies = 0;
+            Sleep(2000);
             introducedToBiomeName = false;
             changeGameState("Biome2");
         }
@@ -814,6 +819,7 @@ void BOSS1_battle()
             cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
             gold = gold - (gold/20);
             HP = maxHP*0.5;
+            defeatedEnemies = 0;
             Sleep(2000);
             changeGameState("Biome1");
         }
@@ -1003,9 +1009,9 @@ void assignToInventory(int item)
 void buyItem(int* offer)
 {
     cout << "  --------------------------------------------" << endl;
-    setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
+    cout << "  Kliknij przycisk od 1 do 9, aby kupić przedmiot." << endl << endl;
     setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Tej akcji nie można cofnąć." << endl << endl;
-    cout << "  Kliknij przycisk od 1 do 9, aby kupić przedmiot." << endl;
+    setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl;
     char inp = getch();
     switch (inp)
     {
@@ -1123,24 +1129,597 @@ void Biome2()
     }
 }
 
-void biome2Battle()
+void Biome2Battle()
 {
    int randomMOB = rand()% 101;
-   if(defeatedEnemies == 7)
+   if(defeatedEnemies == 15)
     changeGameState("Boss2Battle");
     else if(randomMOB <= 55) // 55%
-        mushroom_battle(40, 10, "Biome2");
+        gwiazdka_battle(50, 8, "Biome2");
     else if(randomMOB <= 80) // 25%
-        child_battle(50, 9, "Biome2");
+        balwan_battle(100, 15, "Biome2");
     else if(randomMOB <= 95) // 15%
-        mirror_battle(200, "Biome2");
+        posag_lodu_battle(200, 20, "Biome2");
     else if(randomMOB <= 99) // 4%
-        bandit_battle(300, 30, "Biome2");
+        straznik_lodu_battle(300, 30, "Biome2");
     else if(randomMOB <= 100) // boss 1%
         changeGameState("Boss2Battle");
 }
-
+void gwiazdka_battle(int emaxHP, int edmg, string callback)
+{
+    int run_gwiazdka = rand()%5+1;
+    int HP_gwiazdka = emaxHP;
+    int reward_gwiazdka = rand()%101 + 100;
+    int xp_gwiazdka = rand()%101 + 100;
+    system("cls");
+    renderStats();
+    cout << "       |       [ GWIAZDKA ] "; setColor(4); cout << "HP: " << HP_gwiazdka << "/" << emaxHP; setColor(7);
+    spacer();
+    cout << "     █████                                             " << endl;
+    cout << "    █     █                                            " << endl;
+    cout << "   █   ◉ ◉ █                                           " << endl;
+    cout << "   █   ▄   █                              █    █    █  " << endl;
+    cout << "    █     █                                ▀█  █  █▀   " << endl;
+    cout << "    ▄█████▄                                  █████     " << endl;
+    cout << "   █  ███  █                            ▀▀▀▀█▄███▄█▄▄▄▄" << endl;
+    cout << "     ▄███▄                                   █▄▄▄█     " << endl;
+    cout << "    █     █                                ▄█  █  █▄   " << endl;
+    cout << "   ▄█     █▄                              █    █    █  " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
+    do{
+        system("cls");
+        renderStats();
+        cout << "       |       [ GWIAZDKA ] "; setColor(4); cout << "HP: " << HP_gwiazdka << "/" << emaxHP; setColor(7);
+        spacer();
+        cout << "     █████                                             " << endl;
+        cout << "    █     █                                            " << endl;
+        cout << "   █   ◉ ◉ █                                           " << endl;
+        cout << "   █   ▄   █                              █    █    █  " << endl;
+        cout << "    █     █                                ▀█  █  █▀   " << endl;
+        cout << "    ▄█████▄                                  █████     " << endl;
+        cout << "   █  ███  █                            ▀▀▀▀█▄███▄█▄▄▄▄" << endl;
+        cout << "     ▄███▄                                   █▄▄▄█     " << endl;
+        cout << "    █     █                                ▄█  █  █▄   " << endl;
+        cout << "   ▄█     █▄                              █    █    █  " << endl;
+        spacer();
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+        spacer();
+        char atk;
+        do
+        atk = getch();
+        while(atk!='a' && atk!='u');
+        switch (atk)
+        {
+            case 'a':  HP_gwiazdka = HP_gwiazdka - DMG; break;
+            case 'u':
+                if(run_gwiazdka >= 3)
+                    escapeEnemy();
+                else{
+                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ]";
+                    Sleep(300);
+                    };
+                    run_gwiazdka = rand()%5+1; break;
+        }
+        cout << endl << "[ PRZECIWNIK MA " << HP_gwiazdka << "/" << emaxHP << " HP ]" << endl;
+        Sleep(100);
+        if(HP_gwiazdka <= 0){
+            cout << "[ POKONAŁEŚ GWIAZDKĘ! ]" << endl << endl;
+            cout << "[ OTRZYMAŁEŚ: " << reward_gwiazdka << " ZŁOTA ORAZ " << xp_gwiazdka << "XP" << " ]";
+            gold = gold + reward_gwiazdka;
+            XP = XP + xp_gwiazdka;
+            Sleep(2000);
+            defeatedEnemies++;
+            changeGameState(callback);
+        }
+                else{
+            HP = HP - edmg;
+            cout << "[ STRACIŁEŚ " << edmg << " HP ]" << endl;
+            Sleep(100);
+                }
+        if(HP <= 0){
+            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+            gold = gold - (gold/20);
+            HP = maxHP*0.5;
+            Sleep(2000);
+            introducedToBiomeName = false;
+            changeGameState(callback);
+        }
+    }while(HP_gwiazdka >= 0);
+}
+void balwan_battle(int emaxHP, int edmg, string callback)
+{
+    int run_balwan = rand()%5+1;
+    int HP_balwan = emaxHP;
+    int reward_balwan = rand()%201 + 200;
+    int xp_balwan = rand()%201 + 200;
+    system("cls");
+    renderStats();
+    cout << "       |       [ BALWAN ] "; setColor(4); cout << "HP: " << HP_balwan << "/" << emaxHP; setColor(7);
+    spacer();
+        cout << "     █████                                             " << endl;
+        cout << "    █     █                              █████         " << endl;
+        cout << "   █   ◉ ◉ █                            █ ◉ ◉ █        " << endl;
+        cout << "   █   ▄   █                            █▄ █ ▄█        " << endl;
+        cout << "    █     █                         ▄     ███     ▄    " << endl;
+        cout << "    ▄█████▄                         ▄█▄▄▄█████▄▄▄█▄    " << endl;
+        cout << "   █  ███  █                        ▄▀    ███    ▀▄    " << endl;
+        cout << "     ▄███▄                               █████         " << endl;
+        cout << "    █     █                             ███████        " << endl;
+        cout << "   ▄█     █▄                             █████         " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
+    do{
+        system("cls");
+        renderStats();
+        cout << "       |       [ BALWAN ] "; setColor(4); cout << "HP: " << HP_balwan << "/" << emaxHP; setColor(7);
+        spacer();
+        cout << "     █████                                             " << endl;
+        cout << "    █     █                              █████         " << endl;
+        cout << "   █   ◉ ◉ █                            █ ◉ ◉ █        " << endl;
+        cout << "   █   ▄   █                            █▄ █ ▄█        " << endl;
+        cout << "    █     █                         ▄     ███     ▄    " << endl;
+        cout << "    ▄█████▄                         ▄█▄▄▄█████▄▄▄█▄    " << endl;
+        cout << "   █  ███  █                        ▄▀    ███    ▀▄    " << endl;
+        cout << "     ▄███▄                               █████         " << endl;
+        cout << "    █     █                             ███████        " << endl;
+        cout << "   ▄█     █▄                             █████         " << endl;
+        spacer();
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+        spacer();
+        char atk;
+        do
+        atk = getch();
+        while(atk!='a' && atk!='u');
+        switch (atk)
+        {
+            case 'a':  HP_balwan = HP_balwan - DMG; break;
+            case 'u':
+                if(run_balwan >= 3)
+                    escapeEnemy();
+                else{
+                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ]";
+                    Sleep(300);
+                    };
+                    run_balwan = rand()%5+1; break;
+        }
+        cout << endl << "[ PRZECIWNIK MA " << HP_balwan << "/" << emaxHP << " HP ]" << endl;
+        Sleep(100);
+        if(HP_balwan <= 0){
+            cout << "[ POKONAŁEŚ BALWANA! ]" << endl << endl;
+            cout << "[ OTRZYMAŁEŚ: " << reward_balwan << " ZŁOTA ORAZ " << xp_balwan << "XP" << " ]";
+            gold = gold + reward_balwan;
+            XP = XP + xp_balwan;
+            Sleep(2000);
+            defeatedEnemies++;
+            changeGameState(callback);
+        }
+                else{
+            HP = HP - edmg;
+            cout << "[ STRACIŁEŚ " << edmg << " HP ]" << endl;
+            Sleep(100);
+                }
+        if(HP <= 0){
+            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+            gold = gold - (gold/20);
+            HP = maxHP*0.5;
+            Sleep(2000);
+            introducedToBiomeName = false;
+            changeGameState(callback);
+        }
+    }while(HP_balwan >= 0);
+}
+void posag_lodu_battle(int emaxHP, int edmg, string callback)
+{
+    int run_posag_lodu = rand()%5+1;
+    int HP_posag_lodu = emaxHP;
+    int reward_posag_lodu = rand()%401 + 400;
+    int xp_posag_lodu = rand()%401 + 400;
+    system("cls");
+    renderStats();
+    cout << "       |       [ POSAG LODU ] "; setColor(4); cout << "HP: " << HP_posag_lodu << "/" << emaxHP; setColor(7);
+    spacer();
+        cout << "                                          █████        " << endl;
+        cout << "                                         █     █       " << endl;
+        cout << "                                        █ ◉ ◉   █      " << endl;
+        cout << "     █████                              █    ▄  █      " << endl;
+        cout << "    █     █                              █ ▀▀  █       " << endl;
+        cout << "   █   ◉ ◉ █                             ▄█████▄       " << endl;
+        cout << "   █   ▄   █                            █  ███  █      " << endl;
+        cout << "    █     █                               ▄███▄        " << endl;
+        cout << "    ▄█████▄                              █     █       " << endl;
+        cout << "   █  ███  █                            ▄█     █▄      " << endl;
+        cout << "     ▄███▄                             ███████████     " << endl;
+        cout << "    █     █                            ███████████     " << endl;
+        cout << "   ▄█     █▄                           ███████████     " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
+    do{
+        system("cls");
+        renderStats();
+        cout << "       |       [ POSAG LODU ] "; setColor(4); cout << "HP: " << HP_posag_lodu << "/" << emaxHP; setColor(7);
+        spacer();
+        cout << "                                          █████        " << endl;
+        cout << "                                         █     █       " << endl;
+        cout << "                                        █ ◉ ◉   █      " << endl;
+        cout << "     █████                              █    ▄  █      " << endl;
+        cout << "    █     █                              █ ▀▀  █       " << endl;
+        cout << "   █   ◉ ◉ █                             ▄█████▄       " << endl;
+        cout << "   █   ▄   █                            █  ███  █      " << endl;
+        cout << "    █     █                               ▄███▄        " << endl;
+        cout << "    ▄█████▄                              █     █       " << endl;
+        cout << "   █  ███  █                            ▄█     █▄      " << endl;
+        cout << "     ▄███▄                             ███████████     " << endl;
+        cout << "    █     █                            ███████████     " << endl;
+        cout << "   ▄█     █▄                           ███████████     " << endl;
+        spacer();
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+        spacer();
+        char atk;
+        do
+        atk = getch();
+        while(atk!='a' && atk!='u');
+        switch (atk)
+        {
+            case 'a':  HP_posag_lodu = HP_posag_lodu - DMG; break;
+            case 'u':
+                if(run_posag_lodu >= 3)
+                    escapeEnemy();
+                else{
+                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ]";
+                    Sleep(300);
+                    };
+                    run_posag_lodu = rand()%5+1; break;
+        }
+        cout << endl << "[ PRZECIWNIK MA " << HP_posag_lodu << "/" << emaxHP << " HP ]" << endl;
+        Sleep(100);
+        if(HP_posag_lodu <= 0){
+            cout << "[ POKONAŁEŚ POSAG LODU! ]" << endl << endl;
+            cout << "[ OTRZYMAŁEŚ: " << reward_posag_lodu << " ZŁOTA ORAZ " << xp_posag_lodu << "XP" << " ]";
+            gold = gold + reward_posag_lodu;
+            XP = XP + xp_posag_lodu;
+            Sleep(2000);
+            defeatedEnemies++;
+            changeGameState(callback);
+        }
+                else{
+            HP = HP - edmg;
+            cout << "[ STRACIŁEŚ " << edmg << " HP ]" << endl;
+            Sleep(100);
+                }
+        if(HP <= 0){
+            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+            gold = gold - (gold/20);
+            HP = maxHP*0.5;
+            Sleep(2000);
+            introducedToBiomeName = false;
+            changeGameState(callback);
+        }
+    }while(HP_posag_lodu >= 0);
+}
+void straznik_lodu_battle(int emaxHP, int edmg, string callback)
+{
+    int run_straznik_lodu = rand()%5+1;
+    int HP_straznik_lodu = emaxHP;
+    int reward_straznik_lodu = rand()%201 + 800;
+    int xp_straznik_lodu = rand()%201 + 800;
+    system("cls");
+    renderStats();
+    cout << "       |       [ STRAZNIK LODU ] "; setColor(4); cout << "HP: " << HP_straznik_lodu << "/" << emaxHP; setColor(7);
+    spacer();
+        cout << "     █████                                             " << endl;
+        cout << "    █     █                                            " << endl;
+        cout << "   █   ◉ ◉ █                       ▄█▄                 " << endl;
+        cout << "   █   ▄   █                       ▀█▀  ▄▄▄▄▄▄▄        " << endl;
+        cout << "    █     █                         █   █▀███▀█        " << endl;
+        cout << "    ▄█████▄                         █   ██▄▄▄██        " << endl;
+        cout << "   █  ███  █                        █▀▀▀███████▀▀▀     " << endl;
+        cout << "     ▄███▄                          █   ███████        " << endl;
+        cout << "    █     █                         █   ██   ██        " << endl;
+        cout << "   ▄█     █▄                        █   ██   ██        " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+    spacer();
+    do{
+        system("cls");
+        renderStats();
+        cout << "       |       [ STRAZNIK LODU ] "; setColor(4); cout << "HP: " << HP_straznik_lodu << "/" << emaxHP; setColor(7);
+        spacer();
+        cout << "     █████                                             " << endl;
+        cout << "    █     █                                            " << endl;
+        cout << "   █   ◉ ◉ █                       ▄█▄                 " << endl;
+        cout << "   █   ▄   █                       ▀█▀  ▄▄▄▄▄▄▄        " << endl;
+        cout << "    █     █                         █   █▀███▀█        " << endl;
+        cout << "    ▄█████▄                         █   ██▄▄▄██        " << endl;
+        cout << "   █  ███  █                        █▀▀▀███████▀▀▀     " << endl;
+        cout << "     ▄███▄                          █   ███████        " << endl;
+        cout << "    █     █                         █   ██   ██        " << endl;
+        cout << "   ▄█     █▄                        █   ██   ██        " << endl;
+        spacer();
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[U]"; setColor(7); cout << ", ABY UCIEC ]" << endl;
+        spacer();
+        char atk;
+        do
+        atk = getch();
+        while(atk!='a' && atk!='u');
+        switch (atk)
+        {
+            case 'a':  HP_straznik_lodu = HP_straznik_lodu - DMG; break;
+            case 'u':
+                if(run_straznik_lodu >= 3)
+                    escapeEnemy();
+                else{
+                    cout << "[ PRZECIWNIK NIE POZWOLIŁ CI UCIEC";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ";
+                    Sleep(300);
+                    cout << ". ]";
+                    Sleep(300);
+                    };
+                    run_straznik_lodu = rand()%5+1; break;
+        }
+        cout << endl << "[ PRZECIWNIK MA " << HP_straznik_lodu << "/" << emaxHP << " HP ]" << endl;
+        Sleep(100);
+        if(HP_straznik_lodu <= 0){
+            cout << "[ POKONAŁEŚ GRZYBA! ]" << endl << endl;
+            cout << "[ OTRZYMAŁEŚ: " << reward_straznik_lodu << " ZŁOTA ORAZ " << xp_straznik_lodu << "XP" << " ]";
+            gold = gold + reward_straznik_lodu;
+            XP = XP + xp_straznik_lodu;
+            Sleep(2000);
+            defeatedEnemies++;
+            changeGameState(callback);
+        }
+                else{
+            HP = HP - edmg;
+            cout << "[ STRACIŁEŚ " << edmg << " HP ]" << endl;
+            Sleep(100);
+                }
+        if(HP <= 0){
+            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+            gold = gold - (gold/20);
+            HP = maxHP*0.5;
+            Sleep(2000);
+            introducedToBiomeName = false;
+            changeGameState(callback);
+        }
+    }while(HP_straznik_lodu >= 0);
+}
 void BOSS2_battle()
 {
-    cout << "walka z bossem";
+    system("cls");
+    spacer();
+    cout << "                                           " << endl;
+    cout << "    ██████   ▄█████▄  ▄████▄  ▄████▄   █   " << endl;
+    cout << "    ██    █  █▀   ▀█  █       █        █   " << endl;
+    cout << "    ██████   █  ■  █  ▀████▄  ▀████▄   █   " << endl;
+    cout << "    ██    █  █▄   ▄█       █       █   ▀   " << endl;
+    cout << "    ██████   ▀█████▀  ▀████▀  ▀████▀   ■   " << endl;
+    cout << "                                           " << endl;
+    Sleep(2500);
+    int HP_KRYSZTAL = 600;
+    int reward_KRYSZTAL = rand()%1001 + 1000;
+    int xp_KRYSZTAL = rand()%1001 + 1000;
+    system("cls");
+    renderStats();
+    spacer();
+    cout << "                                              ███ █                    " << endl;
+    cout << "                                         █   █████     █               " << endl;
+    cout << "                                            ███████                    " << endl;
+    cout << "                                   █       █████████  █     █          " << endl;
+    cout << "                                      █   ███████████                  " << endl;
+    cout << "                                         █████████████  █   █          " << endl;
+    cout << "                                  █     ███████████████                " << endl;
+    cout << "                               █       █████████████████  █            " << endl;
+    cout << "                                      ███████░░░░░███████     █        " << endl;
+    cout << "     █████                       █    ██████░░█▄░░░██████              " << endl;
+    cout << "    █     █                           ███████░░░░░███████   █          " << endl;
+    cout << "   █   ◉ ◉ █                           █████████████████               " << endl;
+    cout << "   █   ▄   █                      █     ███████████████         █      " << endl;
+    cout << "    █     █                          █   █████████████     █           " << endl;
+    cout << "    ▄█████▄                     █     █   ███████████ █  █             " << endl;
+    cout << "   █  ███  █                               █████████                   " << endl;
+    cout << "     ▄███▄                            █     ███████ █       █          " << endl;
+    cout << "    █     █                         █        █████       █             " << endl;
+    cout << "   ▄█     █▄                           █      ███  █                   " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
+    spacer();
+    do{
+        system("cls");
+        renderStats();
+        cout << "       |       [ KRYSZTAL ] "; setColor(4); cout << "HP: " << HP_KRYSZTAL << "/600"; setColor(7);
+        spacer();
+    cout << "                                              ███ █                    " << endl;
+    cout << "                                         █   █████     █               " << endl;
+    cout << "                                            ███████                    " << endl;
+    cout << "                                   █       █████████  █     █          " << endl;
+    cout << "                                      █   ███████████                  " << endl;
+    cout << "                                         █████████████  █   █          " << endl;
+    cout << "                                  █     ███████████████                " << endl;
+    cout << "                               █       █████████████████  █            " << endl;
+    cout << "                                      ███████░░░░░███████     █        " << endl;
+    cout << "     █████                       █    ██████░░█▄░░░██████              " << endl;
+    cout << "    █     █                           ███████░░░░░███████   █          " << endl;
+    cout << "   █   ◉ ◉ █                           █████████████████               " << endl;
+    cout << "   █   ▄   █                      █     ███████████████         █      " << endl;
+    cout << "    █     █                          █   █████████████     █           " << endl;
+    cout << "    ▄█████▄                     █     █   ███████████ █  █             " << endl;
+    cout << "   █  ███  █                               █████████                   " << endl;
+    cout << "     ▄███▄                            █     ███████ █       █          " << endl;
+    cout << "    █     █                         █        █████       █             " << endl;
+    cout << "   ▄█     █▄                           █      ███  █                   " << endl;
+        spacer();
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+        cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
+        spacer();
+        char atk;
+        do
+        atk = getch();
+        while(atk!='a' && atk!='u');
+        switch (atk)
+        {
+            case 'a': HP_KRYSZTAL = HP_KRYSZTAL - DMG; break;
+            case 'u': cout << "[ BRAK MOŻLIWOŚCI UCIECZKI. ]" << endl; Sleep(200); break;
+            default: cout << "[ STRACIŁEŚ OKAZJĘ NA ATAK... A PRZECIWNIK JĄ WYKORZYSTAŁ ]" << endl; Sleep(1500); break;
+        }
+        cout << endl << "[ PRZECIWNIK MA " << HP_KRYSZTAL << "/" << "600 HP ]" << endl;
+        Sleep(100);
+        if(HP_KRYSZTAL <= 0){
+            cout << "[ POKONAŁEŚ DRUGIEGO BOSSA KRYSZTAL'a! . " << endl;
+            Sleep(150);
+            cout << ". ";
+            Sleep(150);
+            cout << ". ";
+            Sleep(150);
+            cout << ". ";
+            Sleep(150);
+            cout << ". ]";
+            system("cls");
+            spacer();
+            cout << "[ LECZ ON ODMÓWIŁ PRZEGRANEJ . . . ] " << endl;
+            Sleep(1500);
+            BOSS22_battle();
+        }
+                else{
+            HP = HP - 15;
+            cout << "[ STRACIŁEŚ 15 HP]" << endl;
+            Sleep(100);
+                }
+        if(HP <= 0){
+            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+            gold = gold - (gold/20);
+            HP = maxHP*0.5;
+            defeatedEnemies = 0;
+            Sleep(2000);
+            changeGameState("Biome2");
+        }
+    }while(HP_KRYSZTAL >= 0);
+}
+void BOSS22_battle()
+{
+    int HP_KRYSZTAL = 125;
+    int reward_KRYSZTAL = rand()%501 + 500;
+    int xp_KRYSZTAL = rand()%501 + 500;
+    system("cls");
+    renderStats();
+    spacer();
+    cout << "                                          █          ██ █                    " << endl;
+    cout << "                                     █   ███    █     ██     █               " << endl;
+    cout << "                                        ████     █    ███                    " << endl;
+    cout << "                               █       ████          █████  █     █          " << endl;
+    cout << "                                  █   ████    █     ███████                  " << endl;
+    cout << "                                     ██████          ███████  █   █          " << endl;
+    cout << "                              █     ███████      █   ████████                " << endl;
+    cout << "                           █       ████████  █      ██████████  █            " << endl;
+    cout << "                                  ███████░░█       █░░░░███████     █        " << endl;
+    cout << "     █████                   █    ██████░█▄░█   █  █░█▄░░██████              " << endl;
+    cout << "    █     █                       ███████░░░█      █░░░░███████   █          " << endl;
+    cout << "   █   ◉ ◉ █                       █████████        █░████████               " << endl;
+    cout << "   █   ▄   █                  █     ███████   █      ████████         █      " << endl;
+    cout << "    █     █                      █   ███████     █    ██████     █           " << endl;
+    cout << "    ▄█████▄                 █     █   █████          ██████ █  █             " << endl;
+    cout << "   █  ███  █                           ███ █      █ ██████                   " << endl;
+    cout << "     ▄███▄                        █     ██      █   █████ █       █          " << endl;
+    cout << "    █     █                     █                  █████       █             " << endl;
+    cout << "   ▄█     █▄                       █      █   █    ███  █                   " << endl;
+    spacer();
+    cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+    cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
+    spacer();
+    do{
+        system("cls");
+        renderStats();
+        cout << "       |       [ KRYSZTAL ] "; setColor(4); cout << "HP: " << HP_KRYSZTAL << "/600"; setColor(7);
+        spacer();
+    cout << "                                          █          ██ █                    " << endl;
+    cout << "                                     █   ███    █     ██     █               " << endl;
+    cout << "                                        ████     █    ███                    " << endl;
+    cout << "                               █       ████          █████  █     █          " << endl;
+    cout << "                                  █   ████    █     ███████                  " << endl;
+    cout << "                                     ██████          ███████  █   █          " << endl;
+    cout << "                              █     ███████      █   ████████                " << endl;
+    cout << "                           █       ████████  █      ██████████  █            " << endl;
+    cout << "                                  ███████░░█       █░░░░███████     █        " << endl;
+    cout << "     █████                   █    ██████░█▄░█   █  █░█▄░░██████              " << endl;
+    cout << "    █     █                       ███████░░░█      █░░░░███████   █          " << endl;
+    cout << "   █   ◉ ◉ █                       █████████        █░████████               " << endl;
+    cout << "   █   ▄   █                  █     ███████   █      ████████         █      " << endl;
+    cout << "    █     █                      █   ███████     █    ██████     █           " << endl;
+    cout << "    ▄█████▄                 █     █   █████          ██████ █  █             " << endl;
+    cout << "   █  ███  █                           ███ █      █ ██████                   " << endl;
+    cout << "     ▄███▄                        █     ██      █   █████ █       █          " << endl;
+    cout << "    █     █                     █                  █████       █             " << endl;
+    cout << "   ▄█     █▄                       █      █   █    ███  █                   " << endl;
+        spacer();
+        cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
+        cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
+        spacer();
+        char atk;
+        do
+        atk = getch();
+        while(atk!='a' && atk!='u');
+        switch (atk)
+        {
+            case 'a': HP_KRYSZTAL = HP_KRYSZTAL - DMG; break;
+            case 'u': cout << "[ BRAK MOŻLIWOŚCI UCIECZKI. ]" << endl; Sleep(200); break;
+            default: cout << "[ STRACIŁEŚ OKAZJĘ NA ATAK... A PRZECIWNIK JĄ WYKORZYSTAŁ ]" << endl; Sleep(1500); break;
+        }
+        cout << endl << "[ PRZECIWNIK MA " << HP_KRYSZTAL << "/" << "125 HP ]" << endl;
+        Sleep(100);
+        if(HP_KRYSZTAL <= 0){
+            cout << "[ POKONAŁEŚ DRUGIEGO BOSSA KRYSZTAL'a! ]" << endl << endl;
+            cout << "[ OTRZYMAŁEŚ: " << reward_KRYSZTAL << " ZŁOTA ORAZ " << xp_KRYSZTAL << "XP" << " ]";
+            gold = gold + reward_KRYSZTAL;
+            XP = XP + xp_KRYSZTAL;
+            defeatedEnemies = 0;
+            Sleep(2000);
+            introducedToBiomeName = false;
+            changeGameState("Biome2");
+        }
+                else{
+            HP = HP - 60;
+            cout << "[ STRACIŁEŚ 60 HP]" << endl;
+            Sleep(100);
+                }
+        if(HP <= 0){
+            cout << "[ UMARŁEŚ... STRACIŁEŚ CZĘŚĆ SWOICH ZAROBKÓW ]";
+            gold = gold - (gold/20);
+            HP = maxHP*0.5;
+            defeatedEnemies = 0;
+            Sleep(2000);
+            changeGameState("Biome2");
+        }
+    }while(HP_KRYSZTAL >= 0);
 }
