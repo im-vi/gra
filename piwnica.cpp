@@ -53,16 +53,20 @@ void equipItemConfirmation(int position);
 void biome2();
 void Biome2();
 void Biome2Battle();
+void loadSave();
+void exportSave();
+void showCode();
+void endSeq();
 
 string nick;
-int HP = 90; int maxHP = 100; int DMG = 5;
-int gold = 590015209; int lvl = 0; int XP = 99; int maxXP = 100;
+int HP = 100; int maxHP = 100; int DMG = 5;
+int gold = 0; int lvl = 0; int XP = 0; int maxXP = 100;
 int heldItem = 0;
 // Menu, IntroSequence, Biome1, Biome1Battle, Biome1Boss, Biome2, Biome2Battle, Biome2Boss, EndSequence
 string gameState;
 string items[] = {"-|0|0|0", "Patyk|5|0|0", "Kamień|8|20|0", "Kawałek Szkła|15|75|0", "Młotek|25|150|0", "Żarowy Rzeźnik|30|0|2", "Zardzewiały Ostrz|35|225|1", "Żelazny Kieł|50|475|1", "Diabelskie Ostrze|66|666|2", "Runiczne Ostrze Norvastyru|70|900|3", "Zwiastun Zagłady|80|1500|3", "Rozłupana Siekiera|95|2000|3", "Bojowy Topór|110|2800|3", "Mroźny Rzeźnik|115|0|4", "Płomienny Topór Wojenny|120|3500|2", "Gromowładca|135|4200|3", "Gniew Tytana|150|5555|5", "Pęknięta Różdżka|145|0|4", "Zaklęty Dębowy Kostur|165|7000|3", "Niebiańskie Berło|177|7777|5", "Więziacz Otchłani|180|8000|4", "Dominacja Arcymaga|200|11111|5", "Kataklizm Arkanisty|999|99999|6"};
 int inventory[5];
-int defeatedEnemies = 5;
+int defeatedEnemies = 15;
 bool introducedToBiomeName = false;
 
 int main()
@@ -77,7 +81,7 @@ int main()
     inventory[4] = 0;
     cout << "Podaj nick:" << endl;
     cout << "> "; setColor(5); cin >> nick; setColor(7);
-    changeGameState("Biome1");
+    changeGameState("Menu");
 }
 
 void initializeGameState()
@@ -90,6 +94,7 @@ void initializeGameState()
     else if(gameState == "Biome2") biome2();
     else if(gameState == "Biome2Battle") Biome2Battle();
     else if(gameState == "Biome2Boss") BOSS2_battle();
+    else if(gameState == "EndSequence") endSeq();
 }
 
 void spacer()
@@ -132,11 +137,11 @@ void renderMenu()
     cout << "                        | \\  | |     | |_____/   \\  /  |_____| |______    |      \\_/   |_____/     \n";
     cout << "                        |  \\_| |_____| |     \\_   \\/   |     | ______|    |       |    |     \\_     \n";
     spacer();
-    cout << "                            ******************    ******************    ******************" << endl;
-    cout << "                            *                *    *                *    *                *" << endl;
-    cout << "                            *    START [S]   *    *    WYJDŹ [X]   *    * STEROWANIE [T] *" << endl;
-    cout << "                            *                *    *                *    *                *" << endl;
-    cout << "                            ******************    ******************    ******************" << endl;
+    cout << "                        ********************    ********************    *********************" << endl;
+    cout << "                        *                  *    *                  *    *                   *" << endl;
+    cout << "                        *     START [S]    *    *     WYJDŹ [X]    *    * WCZYTAJ ZAPIS [I] *" << endl;
+    cout << "                        *                  *    *                  *    *                   *" << endl;
+    cout << "                        ********************    ********************    *********************" << endl;
     spacer();
     cout << "                                           (C) 2025 Pahad Entertainment" << endl;
 
@@ -145,9 +150,75 @@ void renderMenu()
     {
         case 'x': exitMenu(); break;
         case 's': changeGameState("IntroSequence"); break;
-        case 't': renderInput(); break;
+        case 'i': loadSave(); break;
         default: renderMenu(); break;
     }
+}
+
+void loadSave()
+{
+    string code;
+    vector<string> splitCode;
+    char delimiter = '!';
+
+    system("cls");
+    cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << " i zatwierdź [ENTER], aby powrócić." << endl;
+    spacer();
+    setColor(4); cout << "  WCZYTYWANIE GRY" << endl;
+    spacer();
+    setColor(7);
+    cout << "  Wklej tutaj kod zapisu otrzymany przy zakończeniu poprzedniej sesji, aby kontynuować grę." << endl;
+    do
+    {
+        cout << "> ";
+        cin >> code;
+        splitCode = splitString(code, delimiter);
+        if (splitCode.size() < 3 || splitCode.front() != "BEGINSAVE" || splitCode.back() != "ENDSAVE")
+        {
+            setColor(4); cout << "  Nieprawidłowy kod zapisu! Spróbuj ponownie." << endl; setColor(7);
+            continue;
+        }
+        else if(code == "b" || code == "B")
+        {
+            changeGameState("Menu");
+        }
+    }
+    while (splitCode.front() != "BEGINSAVE" || splitCode.back() != "ENDSAVE");
+
+    char delimiterInfo = ',';
+    vector<string> gameInfo = splitString(splitCode[1], delimiterInfo);
+    nick = gameInfo[0];
+    string state = gameInfo[1];
+    lvl = stoi(gameInfo[2]);
+    XP = stoi(gameInfo[3]);
+    maxXP = stoi(gameInfo[4]);
+    HP = stoi(gameInfo[5]);
+    maxHP = stoi(gameInfo[6]);
+    gold = stoi(gameInfo[7]);
+    string inv = gameInfo[8];
+    heldItem = stoi(gameInfo[9]);
+    DMG = stoi(gameInfo[10]);
+    defeatedEnemies = stoi(gameInfo[11]);
+
+    char delimiterInventory = '-';
+    vector<string> inventorySlots = splitString(inv, delimiterInventory);
+    inventory[0] = stoi(inventorySlots[0]);
+    inventory[1] = stoi(inventorySlots[1]);
+    inventory[2] = stoi(inventorySlots[2]);
+    inventory[3] = stoi(inventorySlots[3]);
+    inventory[4] = stoi(inventorySlots[4]);
+
+    cout << "  Wczytuję zmiany ";
+    Sleep(500);
+    cout << ".";
+    Sleep(500);
+    cout << ".";
+    Sleep(500);
+    cout << ".";
+    Sleep(500);
+    cout << endl << "  Pomyślnie zaimportowano zapis!";
+    Sleep(1000);
+    changeGameState(state);
 }
 
 void renderStats()
@@ -162,21 +233,59 @@ void renderStats()
     }
 }
 
-void renderInput()
+void exportSave()
 {
     system("cls");
     cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << ", aby powrócić." << endl;
     spacer();
-    setColor(4); cout << "  [I]"; setColor(7); cout << " Ekwipunek" << endl;
-    setColor(4); cout << "  [A]"; setColor(7); cout << " Atak" << endl;
+    setColor(4); cout << "  ZAPISYWANIE GRY" << endl;
+    spacer();
+    setColor(7);
+    cout << "  Aby wczytać ten zapis, skopiuj poniższy kod zapisu i wklej go w menu głównym." << endl;
+    spacer();
+    setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Jeżeli wygenerujesz kod zapisu, nie będziesz mógł powrócić do menu głównego." << endl;
+    cout << "  Wciśnij "; setColor(4); cout << "[E]"; setColor(7); cout << ", aby wygenerować kod zapisu." << endl;
 
     char inp = getch();
     if(inp == 'b') renderMenu();
-    else renderInput();
+    if(inp = 'e') showCode();
+    else exportSave();
+}
+
+void showCode()
+{
+    system("cls");
+    setColor(4); cout << "  ZAPISYWANIE GRY" << endl;
+    spacer();
+    setColor(7);
+    cout << "  Aby wczytać ten zapis, skopiuj poniższy kod zapisu i wklej go w menu głównym." << endl;
+    spacer();
+    setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Jeżeli wygenerujesz kod zapisu, nie będziesz mógł powrócić do menu głównego." << endl;
+    cout << "  Wciśnij "; setColor(4); cout << "[E]"; setColor(7); cout << ", aby wygenerować kod zapisu." << endl << endl;
+    cout << "  BEGINSAVE!" << nick << "," << gameState << "," << lvl << "," << XP << "," << maxXP << "," << HP << "," << maxHP << "," << gold << "," << inventory[0] << "-" << inventory[1] << "-" << inventory[2] << "-" << inventory[3] << "-" << inventory[4] << "," << heldItem << "," << DMG << "," << defeatedEnemies << "!ENDSAVE" << endl;
+    spacer();
+    cout << "  Wciśnij dowolny klawisz, aby opuścić grę." << endl;
+
+    char inp = getch();
 }
 
 void intro()
 {
+    lvl = 0;
+    XP = 0;
+    maxXP = 100;
+    HP = 100;
+    maxHP = 100;
+    gold = 0;
+    heldItem = 0;
+    DMG = 5;
+    defeatedEnemies = 0;
+    inventory[0] = 1;
+    inventory[1] = 0;
+    inventory[2] = 0;
+    inventory[3] = 0;
+    inventory[4] = 0;
+
     system("cls");
     cout << "Witaj, "; setColor(5); cout << nick; setColor(7); cout << ". ";
     Sleep(1000);
@@ -197,7 +306,7 @@ void intro()
     spacer();
     cout << "Wciśnij dowolny klawisz, aby kontynuować." << endl;
 
-    char inp = getch();
+    char inp = tolower(getch());
     if(inp == inp)
     {
         changeGameState("Biome1");
@@ -210,7 +319,6 @@ void setColor(int color) {
 
 void changeGameState(string state)
 {
-    SetConsoleTitle(state.c_str());
     gameState = state;
     initializeGameState();
 }
@@ -279,6 +387,7 @@ void biomeControls(bool lookForEnemies)
         setColor(4); cout << "  [E]"; setColor(7); cout << " Rozpocznij walkę" << endl;
         setColor(4); cout << "  [I]"; setColor(7); cout << " Otwórz ekwipunek" << endl;
         setColor(4); cout << "  [S]"; setColor(7); cout << " Odwiedź sklep" << endl;
+        setColor(4); cout << "  [X]"; setColor(7); cout << " Eksportuj zapis i wyjdź" << endl;
         spacer();
     }
     else
@@ -292,6 +401,7 @@ void biomeControls(bool lookForEnemies)
         setColor(4); cout << "  [E]"; setColor(7); cout << " Rozpocznij walkę" << endl;
         setColor(4); cout << "  [I]"; setColor(7); cout << " Otwórz ekwipunek" << endl;
         setColor(4); cout << "  [S]"; setColor(7); cout << " Odwiedź sklep" << endl;
+        setColor(4); cout << "  [X]"; setColor(7); cout << " Eksportuj zapis i wyjdź" << endl;
         spacer();
     }
 }
@@ -303,12 +413,13 @@ void biome1()
     biomeControls(true);
     int biomeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11};
 
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
         case 's': openStore(biomeOffer); break;
+        case 'x': exportSave(); break;
         default: Biome1(); break;
     }
 }
@@ -319,12 +430,13 @@ void Biome1()
     biomeControls(false);
     int biomeOffer[] = {2, 3, 4, 6, 7, 8, 9, 10, 11};
 
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case 'e': changeGameState("Biome1Battle"); break;
         case 'i': openInventory(); break;
         case 's': openStore(biomeOffer); break;
+        case 'x': exportSave(); break;
         default: Biome1(); break;
     }
 }
@@ -391,7 +503,7 @@ void mushroom_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -481,7 +593,7 @@ void child_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -571,7 +683,7 @@ void mirror_battle(int emaxHP, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -661,7 +773,7 @@ void bandit_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -777,7 +889,7 @@ void BOSS1_battle()
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -904,7 +1016,7 @@ void healMenu(int* storeOffer)
     spacer();
     setColor(7);
     cout << "  Kliknij przycisk od 1 do 5, aby kupić przedmiot." << endl;
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case 'b': openStore(storeOffer); break;
@@ -965,7 +1077,7 @@ void openStore(int storeOffer[])
     }
     spacer();
     setColor(4); cout << endl << "  [K]"; setColor(7); cout << " Kup przedmiot" << endl << endl;
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case 'b': backToBiome(); break;
@@ -1012,7 +1124,7 @@ void buyItem(int* offer)
     cout << "  Kliknij przycisk od 1 do 9, aby kupić przedmiot." << endl << endl;
     setColor(4); cout << "  UWAGA! "; setColor(7); cout << "Tej akcji nie można cofnąć." << endl << endl;
     setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl;
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case '1': buyItemConfirmation(offer[0], offer); break;
@@ -1062,7 +1174,7 @@ void equipItem()
     cout << "  --------------------------------------------" << endl;
     setColor(4); cout << endl << "  [X]"; setColor(7); cout << " Anuluj" << endl << endl;
     cout << "  Kliknij przycisk od 1 do 5, aby wyposażyć przedmiot." << endl;
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case '1': equipItemConfirmation(0); break;
@@ -1103,12 +1215,13 @@ void biome2()
     biomeControls(true);
     int biomeOffer[] = {12, 13, 14, 15, 16, 17, 18, 19, 20};
 
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case 'e': changeGameState("Biome2Battle"); break;
         case 'i': openInventory(); break;
         case 's': openStore(biomeOffer); break;
+        case 'x': exportSave(); break;
         default: Biome2(); break;
     }
 }
@@ -1119,12 +1232,13 @@ void Biome2()
     biomeControls(false);
     int biomeOffer[] = {12, 13, 14, 15, 16, 17, 18, 19, 20};
 
-    char inp = getch();
+    char inp = tolower(getch());
     switch (inp)
     {
         case 'e': changeGameState("Biome2Battle"); break;
         case 'i': openInventory(); break;
         case 's': openStore(biomeOffer); break;
+        case 'x': exportSave(); break;
         default: Biome2(); break;
     }
 }
@@ -1133,7 +1247,7 @@ void Biome2Battle()
 {
    int randomMOB = rand()% 101;
    if(defeatedEnemies == 15)
-    changeGameState("Boss2Battle");
+    changeGameState("Biome2Boss");
     else if(randomMOB <= 55) // 55%
         gwiazdka_battle(50, 8, "Biome2");
     else if(randomMOB <= 80) // 25%
@@ -1143,7 +1257,7 @@ void Biome2Battle()
     else if(randomMOB <= 99) // 4%
         straznik_lodu_battle(300, 30, "Biome2");
     else if(randomMOB <= 100) // boss 1%
-        changeGameState("Boss2Battle");
+        changeGameState("Biome2Boss");
 }
 void gwiazdka_battle(int emaxHP, int edmg, string callback)
 {
@@ -1190,7 +1304,7 @@ void gwiazdka_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -1281,7 +1395,7 @@ void balwan_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -1378,7 +1492,7 @@ void posag_lodu_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -1469,7 +1583,7 @@ void straznik_lodu_battle(int emaxHP, int edmg, string callback)
         spacer();
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -1555,7 +1669,7 @@ void BOSS2_battle()
     spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
-    spacer();
+    cout << endl;
     do{
         system("cls");
         renderStats();
@@ -1583,10 +1697,10 @@ void BOSS2_battle()
         spacer();
         cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
         cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
-        spacer();
+        cout << endl;
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -1657,7 +1771,7 @@ void BOSS22_battle()
     spacer();
     cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
     cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
-    spacer();
+    cout << endl;
     do{
         system("cls");
         renderStats();
@@ -1685,10 +1799,10 @@ void BOSS22_battle()
         spacer();
         cout << " [ KLIKNIJ "; setColor(4); cout << "[A]"; setColor(7); cout << ", ABY UDERZYĆ ]" << endl;
         cout << " [ BRAK MOŻLIWOŚCI UCIECZKI ] " << endl;
-        spacer();
+        cout << endl;
         char atk;
         do
-        atk = getch();
+        atk = tolower(getch());
         while(atk!='a' && atk!='u');
         switch (atk)
         {
@@ -1705,8 +1819,7 @@ void BOSS22_battle()
             XP = XP + xp_KRYSZTAL;
             defeatedEnemies = 0;
             Sleep(2000);
-            introducedToBiomeName = false;
-            changeGameState("Biome2");
+            changeGameState("EndSequence");
         }
                 else{
             HP = HP - 60;
@@ -1722,4 +1835,38 @@ void BOSS22_battle()
             changeGameState("Biome2");
         }
     }while(HP_KRYSZTAL >= 0);
+}
+
+void endSeq()
+{
+    system("cls");
+    cout << "  Gratulacje, "; setColor(5); cout << nick; setColor(7); cout << "." << endl;
+    Sleep(2000);
+    cout << "  Pokonałeś wszystkich przeciwników, a Norvastyr jest teraz wolne od wszelkich niebezpieczeństw." << endl;
+    Sleep(2000);
+    cout << "  W tym miejscu kończy się twoja historia. Ale twoje imię zostanie zapamiętane na wieki." << endl;
+    Sleep(2000);
+    cout << "  Spójrz tylko jak to wspaniale brzmi:" << endl;
+    Sleep(2000);
+    cout << "  \""; setColor(5); cout << nick; setColor(7); cout << ", bohater Norvastyr\"." << endl;
+    Sleep(5000);
+    system("cls");
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << "                 Gra powstała w ramach projektu \"Projekt gry RPG\"." << endl;
+    cout << endl;
+    cout << "                 Wykonane przez:" << endl;
+    cout << "                 Franciszek Bąkała, 2R" << endl;
+    cout << "                 Kacper Bernat, 2R" << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << "                 (C) 2025 Pahad Media, Pahad Entertainment" << endl;
+    Sleep(10000);
+    changeGameState("Menu");
 }
