@@ -26,7 +26,6 @@ void setColor(int color);
 void exitMenu();
 void renderMenu();
 void renderStats();
-void renderInput();
 void openInventory();
 void initializeGameState();
 void changeGameState(string state);
@@ -162,8 +161,6 @@ void loadSave()
     char delimiter = '!';
 
     system("cls");
-    cout << "  < Wciśnij "; setColor(4); cout << "[B]"; setColor(7); cout << " i zatwierdź [ENTER], aby powrócić." << endl;
-    spacer();
     setColor(4); cout << "  WCZYTYWANIE GRY" << endl;
     spacer();
     setColor(7);
@@ -177,10 +174,6 @@ void loadSave()
         {
             setColor(4); cout << "  Nieprawidłowy kod zapisu! Spróbuj ponownie." << endl; setColor(7);
             continue;
-        }
-        else if(code == "b" || code == "B")
-        {
-            changeGameState("Menu");
         }
     }
     while (splitCode.front() != "BEGINSAVE" || splitCode.back() != "ENDSAVE");
@@ -347,6 +340,8 @@ void escapeEnemy()
     Sleep(1000);
     if(gameState == "Biome1Battle")
         changeGameState("Biome1");
+    else if(gameState == "Biome2Battle")
+        changeGameState("Biome2");
 
 }
 
@@ -1867,6 +1862,9 @@ void endSeq()
     cout << endl;
     cout << endl;
     cout << "                 (C) 2025 Pahad Media, Pahad Entertainment" << endl;
+    cout << endl;
+    cout << endl;
+    cout << "                 https://github.com/im-vi/gra" << endl;
     Sleep(10000);
     changeGameState("Menu");
 }
